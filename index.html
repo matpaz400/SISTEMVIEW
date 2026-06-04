@@ -546,7 +546,12 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     currentUser=session.user;
     showLoading('CARGANDO PERFIL...');
     const {data,error}=await sb.from('users').select('*').eq('id',currentUser.id).single();
-    if(error||!data){hideLoading();await sb.auth.signOut();toast('Perfil no encontrado','error');return}
+    if(error||!data){
+      hideLoading();
+      await sb.auth.signOut();
+      toast('Sesión expirada, inicia sesión de nuevo','info');
+      return;
+    }
     currentProfile=data;
     document.getElementById('main-nav').style.display='flex';
     document.getElementById('nav-username').textContent=`${data.nombre} ${data.apellido}`;
