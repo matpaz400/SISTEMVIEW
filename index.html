@@ -205,7 +205,7 @@ canvas#cam-canvas{display:none}
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Fecha</th><th>Hora</th><th>Motivo</th><th>Asistencia</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Asistencia</th></tr></thead>
           <tbody id="user-meetings-tbody"><tr><td colspan="4"><div class="empty-state"><div class="empty-icon">📅</div><p>No hay reuniones aún</p></div></td></tr></tbody>
         </table>
       </div>
@@ -230,7 +230,7 @@ canvas#cam-canvas{display:none}
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Fecha</th><th>Hora</th><th>Motivo</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Acciones</th></tr></thead>
           <tbody id="admin-meetings-tbody"><tr><td colspan="4"><div class="empty-state"><div class="empty-icon">📅</div><p>No hay reuniones</p></div></td></tr></tbody>
         </table>
       </div>
@@ -305,6 +305,7 @@ canvas#cam-canvas{display:none}
     <input type="hidden" id="meeting-edit-id"/>
     <div class="form-group"><label>Fecha</label><input type="date" id="meeting-fecha"/></div>
     <div class="form-group"><label>Hora</label><input type="time" id="meeting-hora"/></div>
+    <div class="form-group"><label>Hora de fin</label><input type="time" id="meeting-hora-fin"/></div>
     <div class="form-group"><label>Motivo / Descripción</label><textarea id="meeting-motivo" rows="3" placeholder="Descripción de la reunión..."></textarea></div>
     <div class="flex gap-2 mt-4">
       <button class="btn btn-ghost w-full" onclick="closeMeetingModal()">Cancelar</button>
@@ -581,7 +582,7 @@ async function loadUserDashboard(){
     else if(present===false)statusHtml=`<span class="status status-absent"><span class="status-dot"></span>Ausente</span>`;
     else statusHtml=`<span class="status" style="background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)"><span class="status-dot" style="background:var(--muted)"></span>Sin registro</span>`;
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${formatDate(m.fecha)}</td><td>${formatTime(m.hora)}</td><td>${m.motivo}</td><td>${statusHtml}</td>`;
+    tr.innerHTML=`<td>${formatDate(m.fecha)}</td><td>${formatTime(m.hora)}</td><td>${formatTime(m.hora_fin)}</td><td>${m.motivo}</td><td>${statusHtml}</td>`;
     tbody.appendChild(tr);
   }
 }
@@ -601,7 +602,7 @@ async function loadAdminMeetings(){
   tbody.innerHTML='';
   data.forEach(m=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${formatDate(m.fecha)}</td><td>${formatTime(m.hora)}</td><td>${m.motivo}</td>
+    tr.innerHTML=`<td>${formatDate(m.fecha)}</td><td>${formatTime(m.hora)}</td><td>${formatTime(m.hora_fin)}</td><td>${m.motivo}</td>
     <td><div class="flex gap-2">
       <button class="btn btn-ghost btn-sm" onclick="editMeeting('${m.id}')">✏️ Editar</button>
       <button class="btn btn-danger btn-sm" onclick="deleteMeeting('${m.id}')">🗑 Borrar</button>
@@ -639,6 +640,7 @@ window.openMeetingModal=()=>{
   document.getElementById('meeting-edit-id').value='';
   document.getElementById('meeting-fecha').value='';
   document.getElementById('meeting-hora').value='';
+  document.getElementById('meeting-hora-fin').value='';
   document.getElementById('meeting-motivo').value='';
   document.getElementById('modal-meeting').classList.add('open');
 }
@@ -649,19 +651,21 @@ window.editMeeting=(id)=>{
   document.getElementById('meeting-edit-id').value=id;
   document.getElementById('meeting-fecha').value=m.fecha||'';
   document.getElementById('meeting-hora').value=(m.hora||'').substring(0,5);
+  document.getElementById('meeting-hora-fin').value=(m.hora_fin||'').substring(0,5);
   document.getElementById('meeting-motivo').value=m.motivo||'';
   document.getElementById('modal-meeting').classList.add('open');
 }
 window.saveMeeting=async()=>{
   const fecha=document.getElementById('meeting-fecha').value;
   const hora=document.getElementById('meeting-hora').value;
+  const horaFin=document.getElementById('meeting-hora-fin').value;
   const motivo=document.getElementById('meeting-motivo').value.trim();
-  if(!fecha||!hora||!motivo){toast('Completa todos los campos','error');return}
+  if(!fecha||!hora||!horaFin||!motivo){toast('Completa todos los campos','error');return}
   const editId=document.getElementById('meeting-edit-id').value;
   const btn=document.getElementById('btn-save-meeting');btn.disabled=true;btn.innerHTML='<div class="loader"></div>';
   let error;
-  if(editId){({error}=await sb.from('meetings').update({fecha,hora,motivo}).eq('id',editId))}
-  else{({error}=await sb.from('meetings').insert({fecha,hora,motivo}))}
+  if(editId){({error}=await sb.from('meetings').update({fecha,hora,hora_fin:horaFin,motivo}).eq('id',editId))}
+  else{({error}=await sb.from('meetings').insert({fecha,hora,hora_fin:horaFin,motivo}))}
   btn.disabled=false;btn.innerHTML='Guardar';
   if(error){toast('Error: '+error.message,'error');return}
   toast(editId?'Reunión actualizada ✓':'Reunión creada ✓','success');
