@@ -341,7 +341,7 @@ function formatTime(t){if(!t)return'—';return t.substring(0,5)}
 
 // ── NAV ──
 window.goHome=()=>{if(!currentProfile)return;currentProfile.role==='admin'?showPage('admin'):showPage('dashboard')}
-window.logout=async()=>{await sb.auth.signOut();currentUser=null;currentProfile=null;document.getElementById('main-nav').style.display='none';showPage('auth');toast('Sesión cerrada','info')}
+window.logout=async()=>{_authHandling=false;await sb.auth.signOut();currentUser=null;currentProfile=null;document.getElementById('main-nav').style.display='none';showPage('auth');toast('Sesión cerrada','info')}
 
 // ── AUTH TAB ──
 window.switchTab=(tab)=>{
@@ -349,11 +349,13 @@ window.switchTab=(tab)=>{
   document.getElementById('tab-register').classList.toggle('active',tab==='register');
   document.getElementById('form-login').style.display=tab==='login'?'block':'none';
   document.getElementById('form-register').style.display=tab==='register'?'block':'none';
+  if(tab==='register') renderPhotoSlots();
 }
 
 // ── PHOTO SLOTS ──
 function renderPhotoSlots(){
   const grid=document.getElementById('photos-grid');
+  if(!grid)return;
   grid.innerHTML='';
   for(let i=0;i<5;i++){
     const slot=document.createElement('div');
@@ -367,7 +369,6 @@ function renderPhotoSlots(){
     grid.appendChild(slot);
   }
 }
-renderPhotoSlots();
 
 window.removePhoto=(idx,e)=>{e.stopPropagation();photoSlots[idx]=null;renderPhotoSlots()}
 
@@ -541,12 +542,17 @@ window.doLogin=async()=>{
 }
 
 // ── SESSION ──
+let _authHandling=false;
 sb.auth.onAuthStateChange(async(event,session)=>{
+  if(event==='SIGNED_OUT'){_authHandling=false;currentUser=null;currentProfile=null;document.getElementById('main-nav').style.display='none';showPage('auth');return;}
+  if(!session?.user||_authHandling)return;
+  _authHandling=true;
   if(session?.user){
     currentUser=session.user;
     showLoading('CARGANDO PERFIL...');
     const {data,error}=await sb.from('users').select('*').eq('id',currentUser.id).single();
     if(error||!data){
+      _authHandling=false;
       hideLoading();
       await sb.auth.signOut();
       toast('Sesión expirada, inicia sesión de nuevo','info');
