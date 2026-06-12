@@ -161,7 +161,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V3</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -180,7 +180,7 @@ canvas#cam-canvas{display:none}
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_</h1>
+        <h1>SISTEMVIS_V3</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
@@ -553,25 +553,21 @@ window.doLogin = async () => {
 };
 
 // ══ AUTH STATE ══
-let _loadingProfile = false;
+// Single entry point: called ONCE on load and ONCE on SIGNED_IN
+let _sessionHandled = false;
 
-async function loadProfile(user){
-  if(_loadingProfile) return;
-  _loadingProfile = true;
+async function goToDashboard(user){
   currentUser = user;
   showLoading('CARGANDO PERFIL...');
-
-  try{
-    const {data, error} = await sb.from('users').select('*').eq('id', user.id).maybeSingle();
-
+  try {
+    const {data} = await sb.from('users').select('*').eq('id', user.id).maybeSingle();
     if(!data){
-      _loadingProfile = false;
       hideLoading();
+      _sessionHandled = false;
       await sb.auth.signOut();
-      toast('Sesión expirada. Inicia sesión de nuevo.','info');
+      toast('No se encontró tu perfil. Inicia sesión de nuevo.','info');
       return;
     }
-
     currentProfile = data;
     $('main-nav').style.display = 'flex';
     $('nav-username').textContent = `${data.nombre} ${data.apellido}`;
@@ -581,35 +577,45 @@ async function loadProfile(user){
     hideLoading();
     if(data.role==='admin'){ showPage('admin'); loadAdminData(); }
     else { showPage('dashboard'); loadUserDashboard(); }
-
-  }catch(e){
-    _loadingProfile = false;
+  } catch(e){
     hideLoading();
-    toast('Error de conexión. Recarga la página.','error');
+    _sessionHandled = false;
+    toast('Error de red. Recarga.','error');
   }
 }
 
-// Al recargar: verificar sesión activa con getSession()
-(async()=>{
-  const {data:{session}} = await sb.auth.getSession();
-  if(session?.user){
-    await loadProfile(session.user);
-  } else {
+// On every page load, check session synchronously via getSession
+// This is the ONLY place we check on reload - no listener needed for this
+window.addEventListener('load', async () => {
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if(error || !session || !session.user){
+      hideLoading();
+      showPage('auth');
+      return;
+    }
+    _sessionHandled = true;
+    await goToDashboard(session.user);
+  } catch(e) {
     hideLoading();
     showPage('auth');
   }
-})();
+});
 
-// Listener solo para login/logout en vivo
-sb.auth.onAuthStateChange(async(event, session)=>{
-  if(event==='SIGNED_OUT'){
-    _loadingProfile = false;
+// Listener ONLY handles live sign-in / sign-out events, NOT page reload
+sb.auth.onAuthStateChange(async(event, session) => {
+  if(event === 'SIGNED_OUT'){
+    _sessionHandled = false;
     currentUser = null; currentProfile = null;
     $('main-nav').style.display = 'none';
-    showPage('auth'); hideLoading(); return;
+    showPage('auth');
+    hideLoading();
+    return;
   }
-  if(event==='SIGNED_IN' && session?.user && !currentProfile){
-    await loadProfile(session.user);
+  // Only handle SIGNED_IN if the load handler didn't already handle it
+  if(event === 'SIGNED_IN' && session?.user && !_sessionHandled){
+    _sessionHandled = true;
+    await goToDashboard(session.user);
   }
 });
 
