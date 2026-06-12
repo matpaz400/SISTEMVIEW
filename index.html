@@ -553,48 +553,63 @@ window.doLogin = async () => {
 };
 
 // ══ AUTH STATE ══
-async function handleSession(user){
-  if(!user){ hideLoading(); return; }
-  currentUser=user;
+let _loadingProfile = false;
+
+async function loadProfile(user){
+  if(_loadingProfile) return;
+  _loadingProfile = true;
+  currentUser = user;
   showLoading('CARGANDO PERFIL...');
 
-  // Retry up to 5 times with 800ms delay (profile may not exist yet right after signup)
-  let data=null, attempts=0;
-  while(attempts<5){
-    try{
-      const res=await sb.from('users').select('*').eq('id',user.id).maybeSingle();
-      if(res.data){ data=res.data; break; }
-    }catch(e){}
-    attempts++;
-    await new Promise(r=>setTimeout(r,800));
-  }
+  try{
+    const {data, error} = await sb.from('users').select('*').eq('id', user.id).maybeSingle();
 
-  if(!data){
+    if(!data){
+      _loadingProfile = false;
+      hideLoading();
+      await sb.auth.signOut();
+      toast('Sesión expirada. Inicia sesión de nuevo.','info');
+      return;
+    }
+
+    currentProfile = data;
+    $('main-nav').style.display = 'flex';
+    $('nav-username').textContent = `${data.nombre} ${data.apellido}`;
+    const badge = $('nav-role-badge');
+    if(data.role==='admin'){ badge.textContent='ADMIN'; badge.className='nav-badge admin'; }
+    else { badge.textContent='USUARIO'; badge.className='nav-badge'; }
     hideLoading();
-    await sb.auth.signOut();
-    toast('Perfil no encontrado. Por favor regístrate.','info');
-    return;
-  }
+    if(data.role==='admin'){ showPage('admin'); loadAdminData(); }
+    else { showPage('dashboard'); loadUserDashboard(); }
 
-  currentProfile=data;
-  $('main-nav').style.display='flex';
-  $('nav-username').textContent=`${data.nombre} ${data.apellido}`;
-  const badge=$('nav-role-badge');
-  if(data.role==='admin'){ badge.textContent='ADMIN'; badge.className='nav-badge admin'; }
-  else { badge.textContent='USUARIO'; badge.className='nav-badge'; }
-  hideLoading();
-  if(data.role==='admin'){ showPage('admin'); loadAdminData(); }
-  else { showPage('dashboard'); loadUserDashboard(); }
+  }catch(e){
+    _loadingProfile = false;
+    hideLoading();
+    toast('Error de conexión. Recarga la página.','error');
+  }
 }
 
-sb.auth.onAuthStateChange(async(event,session)=>{
+// Al recargar: verificar sesión activa con getSession()
+(async()=>{
+  const {data:{session}} = await sb.auth.getSession();
+  if(session?.user){
+    await loadProfile(session.user);
+  } else {
+    hideLoading();
+    showPage('auth');
+  }
+})();
+
+// Listener solo para login/logout en vivo
+sb.auth.onAuthStateChange(async(event, session)=>{
   if(event==='SIGNED_OUT'){
-    currentUser=null; currentProfile=null;
-    $('main-nav').style.display='none';
+    _loadingProfile = false;
+    currentUser = null; currentProfile = null;
+    $('main-nav').style.display = 'none';
     showPage('auth'); hideLoading(); return;
   }
-  if((event==='SIGNED_IN'||event==='INITIAL_SESSION') && session?.user && !currentProfile){
-    await handleSession(session.user);
+  if(event==='SIGNED_IN' && session?.user && !currentProfile){
+    await loadProfile(session.user);
   }
 });
 
