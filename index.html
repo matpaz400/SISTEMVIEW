@@ -161,7 +161,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V3</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V4</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -180,7 +180,7 @@ canvas#cam-canvas{display:none}
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V3</h1>
+        <h1>SISTEMVIS_V4</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
@@ -553,70 +553,35 @@ window.doLogin = async () => {
 };
 
 // ══ AUTH STATE ══
-// Single entry point: called ONCE on load and ONCE on SIGNED_IN
-let _sessionHandled = false;
-
 async function goToDashboard(user){
   currentUser = user;
-  showLoading('CARGANDO PERFIL...');
   try {
     const {data} = await sb.from('users').select('*').eq('id', user.id).maybeSingle();
-    if(!data){
-      hideLoading();
-      _sessionHandled = false;
-      await sb.auth.signOut();
-      toast('No se encontró tu perfil. Inicia sesión de nuevo.','info');
-      return;
-    }
+    if(!data){ await sb.auth.signOut(); return; }
     currentProfile = data;
     $('main-nav').style.display = 'flex';
     $('nav-username').textContent = `${data.nombre} ${data.apellido}`;
     const badge = $('nav-role-badge');
     if(data.role==='admin'){ badge.textContent='ADMIN'; badge.className='nav-badge admin'; }
     else { badge.textContent='USUARIO'; badge.className='nav-badge'; }
-    hideLoading();
     if(data.role==='admin'){ showPage('admin'); loadAdminData(); }
     else { showPage('dashboard'); loadUserDashboard(); }
-  } catch(e){
-    hideLoading();
-    _sessionHandled = false;
-    toast('Error de red. Recarga.','error');
-  }
+  } catch(e){ await sb.auth.signOut(); }
+  finally { hideLoading(); }
 }
 
-// On every page load, check session synchronously via getSession
-// This is the ONLY place we check on reload - no listener needed for this
-window.addEventListener('load', async () => {
-  try {
-    const { data: { session }, error } = await sb.auth.getSession();
-    if(error || !session || !session.user){
-      hideLoading();
-      showPage('auth');
-      return;
-    }
-    _sessionHandled = true;
-    await goToDashboard(session.user);
-  } catch(e) {
-    hideLoading();
-    showPage('auth');
-  }
+// Timeout safety: if still loading after 5s, go to login
+const _safetyTimer = setTimeout(()=>{ if($('loading-overlay').classList.contains('show')){ hideLoading(); showPage('auth'); } }, 5000);
+
+sb.auth.getSession().then(({data:{session}})=>{
+  clearTimeout(_safetyTimer);
+  if(session?.user){ goToDashboard(session.user); }
+  else { hideLoading(); showPage('auth'); }
 });
 
-// Listener ONLY handles live sign-in / sign-out events, NOT page reload
-sb.auth.onAuthStateChange(async(event, session) => {
-  if(event === 'SIGNED_OUT'){
-    _sessionHandled = false;
-    currentUser = null; currentProfile = null;
-    $('main-nav').style.display = 'none';
-    showPage('auth');
-    hideLoading();
-    return;
-  }
-  // Only handle SIGNED_IN if the load handler didn't already handle it
-  if(event === 'SIGNED_IN' && session?.user && !_sessionHandled){
-    _sessionHandled = true;
-    await goToDashboard(session.user);
-  }
+sb.auth.onAuthStateChange((event, session)=>{
+  if(event==='SIGNED_OUT'){ currentUser=null; currentProfile=null; $('main-nav').style.display='none'; hideLoading(); showPage('auth'); }
+  if(event==='SIGNED_IN' && session?.user && !currentProfile){ clearTimeout(_safetyTimer); goToDashboard(session.user); }
 });
 
 // ══ USER DASHBOARD ══
