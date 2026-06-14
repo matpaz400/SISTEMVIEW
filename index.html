@@ -161,7 +161,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V9</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V10</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -180,7 +180,7 @@ canvas#cam-canvas{display:none}
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V9</h1>
+        <h1>SISTEMVIS_V10</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
@@ -347,6 +347,8 @@ canvas#cam-canvas{display:none}
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.1.0/dist/blazeface.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ══ CONFIG ══
@@ -357,139 +359,58 @@ const TOTAL_PHOTOS = 10;
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ══ FACE DETECTION (Google Cloud Vision API) ══
-const VISION_KEY = 'AIzaSyAPssLCYRMqgCZDA9c2fkcalDfU52rNxwM';
+// ══ FACE DETECTION (TensorFlow.js BlazeFace - 100% local) ══
+let blazeFaceModel = null;
 
-async function verifyFace(dataURL){
-  // Compress image to max 800px to reduce payload size
-  const compressed = await compressImage(dataURL, 800);
-  const base64 = compressed.split(',')[1];
-
-  let faces = [];
+async function loadFaceModel(){
   try{
-    const res = await fetch(
-      `https://vision.googleapis.com/v1/images:annotate?key=${VISION_KEY}`,
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          requests:[{
-            image:{ content: base64 },
-            features:[{ type:'FACE_DETECTION', maxResults:10 }]
-          }]
-        })
-      }
-    );
-    const json = await res.json();
-    if(!res.ok){
-      // API error - mostrar el error real
-      const msg = json.error?.message || 'Error de API';
-      toast('⚠️ Error Vision API: ' + msg, 'error');
-      return false;
-    }
-    faces = json.responses?.[0]?.faceAnnotations || [];
+    blazeFaceModel = await blazeface.load();
+    console.log('BlazeFace model loaded');
   }catch(e){
-    toast('⚠️ Sin conexión para verificar. Intenta de nuevo.','error');
-    return false;
+    console.warn('BlazeFace load error:', e);
   }
-
-  if(faces.length === 0){
-    toast('❌ No se detectó ningún rostro humano. Usa una foto clara de tu cara.','error');
-    return false;
-  }
-  if(faces.length > 1){
-    toast(`❌ Se detectaron ${faces.length} personas. Solo debe aparecer una cara.`,'error');
-    return false;
-  }
-  const conf = faces[0].detectionConfidence || 0;
-  if(conf < 0.4){
-    toast('❌ Cara poco visible. Mejora la iluminación o acércate más.','error');
-    return false;
-  }
-  return true;
 }
+loadFaceModel();
 
-// Compress image to maxSize px maintaining aspect ratio
-function compressImage(dataURL, maxSize){
-  return new Promise(resolve=>{
+function dataURLtoImageElement(dataURL){
+  return new Promise((resolve, reject)=>{
     const img = new Image();
-    img.onload = ()=>{
-      let w = img.width, h = img.height;
-      if(w > maxSize || h > maxSize){
-        if(w > h){ h = Math.round(h*maxSize/w); w = maxSize; }
-        else { w = Math.round(w*maxSize/h); h = maxSize; }
-      }
-      const c = document.createElement('canvas');
-      c.width=w; c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      resolve(c.toDataURL('image/jpeg', 0.85));
-    };
-    img.onerror = ()=> resolve(dataURL);
+    img.onload  = ()=> resolve(img);
+    img.onerror = ()=> reject(new Error('Image load failed'));
     img.src = dataURL;
   });
 }
 
-// ══ STATE ══
-let currentUser    = null;
-let currentProfile = null;
-let photoSlots     = Array(TOTAL_PHOTOS).fill(null);
-let currentSlot    = -1;
-let cameraStream   = null;
-let facingMode     = 'user';
-let allMeetings    = [];
-let allUsers       = [];
-
-// ══ UTILS ══
-const $  = id => document.getElementById(id);
-const showPage = id => { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); $('page-'+id).classList.add('active'); };
-const showLoading = (t='PROCESANDO...') => { $('loading-overlay').classList.add('show'); $('loading-text').textContent=t; };
-const hideLoading = () => $('loading-overlay').classList.remove('show');
-const formatDate  = d => { if(!d)return'—'; const[y,m,day]=d.split('-'); return`${day}/${m}/${y}`; };
-const formatTime  = t => t ? t.substring(0,5) : '—';
-
-function toast(msg, type='info'){
-  const el=document.createElement('div');
-  el.className=`toast-item ${type}`;
-  el.innerHTML=`<span>${type==='success'?'✓':type==='error'?'✗':'ℹ'}</span><span>${msg}</span>`;
-  $('toast').appendChild(el);
-  setTimeout(()=>el.remove(), 4200);
-}
-
-// ══ NAV ══
-window.goHome = () => { if(currentProfile) currentProfile.role==='admin' ? showPage('admin') : showPage('dashboard'); };
-window.doLogout = async () => {
-  currentProfile = null;
-  await sb.auth.signOut();
-  currentUser=null; currentProfile=null;
-  $('main-nav').style.display='none';
-  showPage('auth');
-  toast('Sesión cerrada','info');
-};
-
-// ══ AUTH TABS ══
-window.switchTab = tab => {
-  $('tab-login').classList.toggle('active', tab==='login');
-  $('tab-register').classList.toggle('active', tab==='register');
-  $('form-login').style.display   = tab==='login'    ? 'block' : 'none';
-  $('form-register').style.display= tab==='register' ? 'block' : 'none';
-  if(tab==='register') renderPhotoSlots();
-};
-
-// ══ PHOTO SLOTS (10) ══
-function renderPhotoSlots(){
-  const grid=$('photos-grid');
-  if(!grid) return;
-  grid.innerHTML='';
-  for(let i=0;i<TOTAL_PHOTOS;i++){
-    const slot=document.createElement('div');
-    slot.className='photo-slot'+(photoSlots[i]?' filled':'');
-    if(photoSlots[i]){
-      slot.innerHTML=`<img src="${photoSlots[i]}" alt="foto ${i+1}"/><button class="remove-photo" onclick="removePhoto(${i},event)">✕</button>`;
-    } else {
-      slot.innerHTML=`<span class="slot-icon">📷</span><span class="slot-num">${i+1}</span>`;
-      slot.onclick=()=>openCameraModal(i);
+async function verifyFace(dataURL){
+  if(!blazeFaceModel){
+    // Model not loaded yet - try once more
+    try{
+      blazeFaceModel = await blazeface.load();
+    }catch(e){
+      toast('⚠️ Detector no disponible. Foto aceptada sin verificación.','info');
+      return true;
     }
-    grid.appendChild(slot);
+  }
+  try{
+    const img = await dataURLtoImageElement(dataURL);
+    // Draw to canvas so TF can read pixel data
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    const predictions = await blazeFaceModel.estimateFaces(c, false);
+    if(predictions.length === 0){
+      toast('❌ No se detectó ningún rostro. Asegúrate que tu cara sea visible y bien iluminada.','error');
+      return false;
+    }
+    if(predictions.length > 1){
+      toast(`❌ Se detectaron ${predictions.length} rostros. La foto debe ser solo de una persona.`,'error');
+      return false;
+    }
+    return true;
+  }catch(e){
+    console.warn('verifyFace error:', e);
+    toast('⚠️ Error al verificar. Foto aceptada.','info');
+    return true;
   }
 }
 
