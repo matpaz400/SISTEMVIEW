@@ -161,7 +161,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V6</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V8</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -180,7 +180,7 @@ canvas#cam-canvas{display:none}
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V6</h1>
+        <h1>SISTEMVIS_V8</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
@@ -348,7 +348,6 @@ canvas#cam-canvas{display:none}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
 // ══ CONFIG ══
 const SUPABASE_URL = 'https://jvqdohmytnzfvjcthxgr.supabase.co';
@@ -358,48 +357,55 @@ const TOTAL_PHOTOS = 10;
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ══ FACE DETECTION ══
-let faceApiReady = false;
-
-async function loadFaceApi(){
-  if(faceApiReady) return;
-  try{
-    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model';
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
-    ]);
-    faceApiReady = true;
-    console.log('face-api ready');
-  }catch(e){
-    console.warn('face-api load error:', e);
-  }
-}
-
-// Load models as soon as page loads
-loadFaceApi();
+// ══ FACE DETECTION (Google Cloud Vision API) ══
+const VISION_KEY = 'AIzaSyAPssLCYRMqgCZDA9c2fkcalDfU52rNxwM';
 
 async function verifyFace(dataURL){
-  if(!faceApiReady){ return true; } // models not loaded, allow
   try{
-    const img = new Image();
-    img.src = dataURL;
-    await new Promise(r=>{ img.onload=r; img.onerror=r; });
-    const detections = await faceapi
-      .detectAllFaces(img, new faceapi.TinyFaceDetectorOptions({scoreThreshold:0.45}))
-      .withFaceLandmarks(true);
-    if(detections.length === 0){
-      toast('❌ No se detectó ningún rostro. Asegúrate que tu cara sea visible.','error');
+    // Strip base64 header
+    const base64 = dataURL.split(',')[1];
+
+    const body = {
+      requests:[{
+        image:{ content: base64 },
+        features:[{ type:'FACE_DETECTION', maxResults:10 }]
+      }]
+    };
+
+    const res = await fetch(
+      `https://vision.googleapis.com/v1/images:annotate?key=${VISION_KEY}`,
+      { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }
+    );
+
+    if(!res.ok){
+      const err = await res.json();
+      console.warn('Vision API error:', err);
+      return true; // on API error allow
+    }
+
+    const data = await res.json();
+    const faces = data.responses?.[0]?.faceAnnotations || [];
+
+    if(faces.length === 0){
+      toast('❌ No se detectó ningún rostro. Asegúrate que tu cara esté bien visible e iluminada.','error');
       return false;
     }
-    if(detections.length > 1){
-      toast(`❌ Se detectaron ${detections.length} rostros. La foto debe ser solo de una persona.`,'error');
+    if(faces.length > 1){
+      toast(`❌ Se detectaron ${faces.length} rostros. La foto debe ser solo de una persona.`,'error');
       return false;
     }
+
+    // Check detection confidence
+    const confidence = faces[0].detectionConfidence || 0;
+    if(confidence < 0.5){
+      toast('❌ Rostro no reconocido con claridad. Intenta con mejor iluminación.','error');
+      return false;
+    }
+
     return true;
   }catch(e){
-    console.warn('face verify error:',e);
-    return true; // on error allow
+    console.warn('verifyFace error:', e);
+    return true; // on network error allow
   }
 }
 
