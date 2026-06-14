@@ -1,73 +1,69 @@
+cat > /mnt/user-data/outputs/asistencia-vision-artificial.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SistemaVis — Control de Asistencia</title>
+<title>SistemaVis V13</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#050c14;--surface:#0a1624;--card:#0d1e30;--accent:#00e5ff;--accent2:#00ff88;--accent3:#ff4d6d;--text:#c8dff0;--muted:#4a6880;--border:rgba(0,229,255,0.13);--glow:0 0 20px rgba(0,229,255,0.3);--radius:14px}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
+:root{--bg:#050c14;--card:#0d1e30;--accent:#00e5ff;--accent2:#00ff88;--accent3:#ff4d6d;--text:#c8dff0;--muted:#4a6880;--border:rgba(0,229,255,0.13);--radius:14px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 .page{display:none;position:relative;z-index:1;min-height:100vh}
 .page.active{display:flex;flex-direction:column}
+/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(5,12,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;text-shadow:var(--glow);cursor:pointer}
+.nav-logo{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;cursor:pointer}
 .nav-right{display:flex;gap:12px;align-items:center}
 .nav-user{font-size:.8rem;color:var(--muted);font-family:'Share Tech Mono',monospace}
-.nav-badge{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.3);padding:3px 10px;border-radius:100px;font-size:.65rem;font-family:'Share Tech Mono',monospace;letter-spacing:1px}
+.nav-badge{padding:3px 10px;border-radius:100px;font-size:.65rem;font-family:'Share Tech Mono',monospace;letter-spacing:1px;background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.3)}
 .nav-badge.admin{background:rgba(255,77,109,.12);color:var(--accent3);border-color:rgba(255,77,109,.3)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-decoration:none;letter-spacing:.3px}
-.btn-primary{background:var(--accent);color:var(--bg)}
-.btn-primary:hover{background:#33ecff;box-shadow:0 0 28px rgba(0,229,255,.45);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}
-.btn-ghost:hover{background:rgba(0,229,255,.06);border-color:var(--accent)}
-.btn-danger{background:rgba(255,77,109,.15);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}
-.btn-danger:hover{background:rgba(255,77,109,.25)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--accent);color:var(--bg)}.btn-primary:hover{background:#33ecff;box-shadow:0 0 28px rgba(0,229,255,.4);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}.btn-ghost:hover{background:rgba(0,229,255,.06)}
+.btn-danger{background:rgba(255,77,109,.15);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}.btn-danger:hover{background:rgba(255,77,109,.25)}
 .btn-sm{padding:7px 16px;font-size:.78rem}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+/* FORMS */
 .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
 label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
 input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;transition:border-color .2s;outline:none;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,255,.1)}
 input::placeholder{color:var(--muted)}
 select option{background:var(--card)}
+/* CARD */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
-.card-sm{padding:20px}
-
 /* AUTH */
 #page-auth{align-items:center;justify-content:center}
 .auth-wrap{width:100%;max-width:520px;margin:auto;padding:40px 24px}
 .auth-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden}
-.auth-box::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,255,.07),transparent 70%);pointer-events:none}
 .auth-logo{text-align:center;margin-bottom:32px}
-.auth-logo h1{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--accent);text-shadow:var(--glow);letter-spacing:3px}
+.auth-logo h1{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--accent);letter-spacing:3px}
 .auth-logo p{font-size:.8rem;color:var(--muted);margin-top:6px}
 .auth-tabs{display:flex;margin-bottom:28px;background:rgba(255,255,255,.03);border-radius:10px;padding:4px}
 .auth-tab{flex:1;padding:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all .2s;color:var(--muted)}
 .auth-tab.active{background:var(--accent);color:var(--bg)}
-
-/* PHOTO GRID 10 FOTOS - 5 columnas x 2 filas */
+/* PHOTOS */
 .photos-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
 .photo-slot{aspect-ratio:1;border:1.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;background:rgba(255,255,255,.02)}
 .photo-slot:hover{border-color:var(--accent);background:rgba(0,229,255,.04)}
 .photo-slot.filled{border-style:solid;border-color:rgba(0,255,136,.4)}
 .photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.photo-slot .slot-num{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:3px}
-.photo-slot .slot-icon{font-size:1rem}
-.photo-slot .remove-photo{position:absolute;top:3px;right:3px;background:rgba(255,77,109,.85);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:.6rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10}
-.photo-slot.filled:hover .remove-photo{display:flex}
-
+.photo-slot .snum{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:3px}
+.photo-slot .sico{font-size:1rem}
+.photo-slot .rdel{position:absolute;top:3px;right:3px;background:rgba(255,77,109,.85);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:.6rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10}
+.photo-slot.filled:hover .rdel{display:flex}
 /* DASHBOARD */
 #page-dashboard,#page-admin{padding-top:70px}
 .dash-inner{max-width:1150px;margin:0 auto;padding:40px 32px}
 .dash-header{margin-bottom:36px}
 .dash-header h2{font-size:1.8rem;font-weight:800}
 .dash-header p{color:var(--muted);font-size:.9rem;margin-top:4px}
-.dash-mono{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:3px;margin-bottom:6px}
-
+.mono{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--accent)}
+.mb-4{margin-bottom:16px}.mt-4{margin-top:16px}.w-full{width:100%}
 /* TABLE */
 .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:.85rem}
@@ -76,92 +72,79 @@ tbody tr{border-bottom:1px solid rgba(0,229,255,.05);transition:background .15s}
 tbody tr:hover{background:rgba(0,229,255,.03)}
 tbody tr:last-child{border-bottom:none}
 tbody td{padding:13px 18px;vertical-align:middle}
-
 /* STATUS */
 .status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:700}
-.status-present{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.25)}
-.status-absent{background:rgba(255,77,109,.12);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}
-.status-none{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
-.status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.status-present .status-dot{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
-.status-absent .status-dot{background:var(--accent3)}
-.status-none .status-dot{background:var(--muted)}
-
-/* ATTENDANCE TOGGLE */
+.sp{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.25)}
+.sa{background:rgba(255,77,109,.12);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}
+.sn{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sp .sdot{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
+.sa .sdot{background:var(--accent3)}
+.sn .sdot{background:var(--muted)}
+/* ATTENDANCE */
 .att-toggle{display:flex;gap:6px}
 .att-btn{padding:5px 12px;border-radius:100px;font-size:.72rem;font-weight:700;cursor:pointer;border:1px solid transparent;transition:all .2s}
-.att-btn-present{background:rgba(0,255,136,.08);color:var(--accent2);border-color:rgba(0,255,136,.2)}
-.att-btn-present:hover,.att-btn-present.active{background:rgba(0,255,136,.22);border-color:var(--accent2);box-shadow:0 0 10px rgba(0,255,136,.2)}
-.att-btn-absent{background:rgba(255,77,109,.08);color:var(--accent3);border-color:rgba(255,77,109,.2)}
-.att-btn-absent:hover,.att-btn-absent.active{background:rgba(255,77,109,.22);border-color:var(--accent3)}
-
+.abp{background:rgba(0,255,136,.08);color:var(--accent2);border-color:rgba(0,255,136,.2)}
+.abp:hover,.abp.active{background:rgba(0,255,136,.22);border-color:var(--accent2)}
+.aba{background:rgba(255,77,109,.08);color:var(--accent3);border-color:rgba(255,77,109,.2)}
+.aba:hover,.aba.active{background:rgba(255,77,109,.22);border-color:var(--accent3)}
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:24px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:480px;position:relative;animation:modalIn .2s ease}
-@keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:480px;position:relative;animation:mIn .2s ease}
+@keyframes mIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
 .modal-close:hover{background:rgba(255,77,109,.2);color:var(--accent3)}
 .modal h3{font-size:1.1rem;font-weight:800;margin-bottom:20px}
-
-/* CAMERA MODAL */
-.cam-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:420px;position:relative;animation:modalIn .2s ease}
+/* CAMERA */
+.cam-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:420px;position:relative;animation:mIn .2s ease}
 .cam-tabs{display:flex;margin-bottom:20px;background:rgba(255,255,255,.03);border-radius:10px;padding:4px}
 .cam-tab{flex:1;padding:8px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all .2s;color:var(--muted)}
 .cam-tab.active{background:var(--accent);color:var(--bg)}
 .video-wrap{position:relative;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;margin-bottom:16px}
 #cam-video{width:100%;height:100%;object-fit:cover;display:block}
-.scan-line-cam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 10px var(--accent);animation:scanMove 2s ease-in-out infinite;pointer-events:none}
-@keyframes scanMove{0%{top:10%}50%{top:85%}100%{top:10%}}
-.cam-corners span{position:absolute;width:22px;height:22px;border-color:var(--accent);border-style:solid}
-.cam-corners span:nth-child(1){top:10px;left:10px;border-width:2px 0 0 2px}
-.cam-corners span:nth-child(2){top:10px;right:10px;border-width:2px 2px 0 0}
-.cam-corners span:nth-child(3){bottom:10px;left:10px;border-width:0 0 2px 2px}
-.cam-corners span:nth-child(4){bottom:10px;right:10px;border-width:0 2px 2px 0}
+.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 10px var(--accent);animation:scan 2s ease-in-out infinite;pointer-events:none}
+@keyframes scan{0%{top:10%}50%{top:85%}100%{top:10%}}
+.corners span{position:absolute;width:22px;height:22px;border-color:var(--accent);border-style:solid}
+.corners span:nth-child(1){top:10px;left:10px;border-width:2px 0 0 2px}
+.corners span:nth-child(2){top:10px;right:10px;border-width:2px 2px 0 0}
+.corners span:nth-child(3){bottom:10px;left:10px;border-width:0 0 2px 2px}
+.corners span:nth-child(4){bottom:10px;right:10px;border-width:0 2px 2px 0}
 .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
 .upload-zone:hover{border-color:var(--accent);background:rgba(0,229,255,.04)}
 canvas#cam-canvas{display:none}
-
 /* MISC */
-.section-divider{height:1px;background:var(--border);margin:40px 0}
-.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty-state .ei{font-size:2.5rem;margin-bottom:10px;opacity:.4}
-.mono{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--accent)}
-.text-muted{color:var(--muted)}
+.divider{height:1px;background:var(--border);margin:40px 0}
+.empty{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty .ei{font-size:2.5rem;margin-bottom:10px;opacity:.4}
 .flex{display:flex}.gap-2{gap:8px}.items-center{align-items:center}.justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}
-.mt-4{margin-top:16px}.mb-4{margin-bottom:16px}.w-full{width:100%}
 .chip{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.7rem;background:rgba(0,229,255,.08);color:var(--accent);border:1px solid var(--border);font-family:'Share Tech Mono',monospace}
 .chip.admin{background:rgba(255,77,109,.1);color:var(--accent3);border-color:rgba(255,77,109,.3)}
 .user-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(0,229,255,.06)}
 .user-row:last-child{border-bottom:none}
-.user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden}
-.user-avatar img{width:100%;height:100%;object-fit:cover}
-.user-info{flex:1}
-.user-info .name{font-weight:700;font-size:.9rem}
-.user-info .email{font-size:.75rem;color:var(--muted)}
-
+.uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden}
+.uav img{width:100%;height:100%;object-fit:cover}
+.uinfo{flex:1}.uinfo .name{font-weight:700;font-size:.9rem}.uinfo .email{font-size:.75rem;color:var(--muted)}
 /* TOAST */
 #toast{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-.toast-item{padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:600;animation:toastIn .3s ease;display:flex;align-items:center;gap:10px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto}
-.toast-item.success{background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--accent2)}
-.toast-item.error{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:var(--accent3)}
-.toast-item.info{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);color:var(--accent)}
-@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-
+.ti{padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:600;animation:tIn .3s ease;display:flex;align-items:center;gap:10px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto}
+.ti.success{background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--accent2)}
+.ti.error{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:var(--accent3)}
+.ti.info{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);color:var(--accent)}
+@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 /* LOADER */
 .loader{display:inline-block;width:18px;height:18px;border:2px solid rgba(0,229,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-overlay{position:fixed;inset:0;background:rgba(5,12,20,.88);z-index:900;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .loading-overlay.show{display:flex}
 .loading-overlay p{font-family:'Share Tech Mono',monospace;font-size:.8rem;color:var(--accent);letter-spacing:2px}
-
 @media(max-width:600px){nav{padding:12px 20px}.dash-inner{padding:24px 16px}.auth-box{padding:28px 20px}.photos-grid{gap:6px}}
 </style>
 </head>
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V10</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V13</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -175,27 +158,23 @@ canvas#cam-canvas{display:none}
 </div>
 <div id="toast"></div>
 
-<!-- ══ AUTH ══ -->
+<!-- AUTH -->
 <div class="page active" id="page-auth">
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V10</h1>
+        <h1>SISTEMVIS_V13</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
         <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar Sesión</div>
         <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</div>
       </div>
-
-      <!-- LOGIN -->
       <div id="form-login">
         <div class="form-group"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com"/></div>
         <div class="form-group"><label>Contraseña</label><input type="password" id="login-password" placeholder="••••••••"/></div>
         <button class="btn btn-primary w-full mt-4" onclick="doLogin()">Iniciar Sesión</button>
       </div>
-
-      <!-- REGISTER -->
       <div id="form-register" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="form-group" style="margin-bottom:0"><label>Nombre</label><input type="text" id="reg-nombre" placeholder="Juan"/></div>
@@ -206,87 +185,72 @@ canvas#cam-canvas{display:none}
         <div class="form-group">
           <label>10 Fotos de perfil <span style="color:var(--accent3)">*</span></label>
           <div class="photos-grid" id="photos-grid"></div>
-          <p style="font-size:.72rem;color:var(--muted);margin-top:6px">Haz clic en cada slot para tomar o subir una foto (10 requeridas).</p>
+          <p style="font-size:.72rem;color:var(--muted);margin-top:6px">Haz clic en cada slot para tomar o subir una foto.</p>
         </div>
-        <button class="btn btn-primary w-full mt-4" onclick="doRegister()" id="btn-register">Crear cuenta</button>
+        <button class="btn btn-primary w-full mt-4" onclick="doRegister()">Crear cuenta</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ DASHBOARD USUARIO ══ -->
+<!-- DASHBOARD USUARIO -->
 <div class="page" id="page-dashboard">
   <div class="dash-inner">
     <div class="dash-header">
-      <div class="dash-mono">// PANEL DE USUARIO</div>
+      <div class="mono mb-4">// PANEL DE USUARIO</div>
       <h2 id="dash-welcome">Bienvenido</h2>
-      <p class="text-muted">Historial de reuniones y tu asistencia</p>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:4px">Historial de reuniones y tu asistencia</p>
     </div>
     <div class="card">
       <div class="mono mb-4">REUNIONES</div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Asistencia</th></tr></thead>
-          <tbody id="user-meetings-tbody">
-            <tr><td colspan="5"><div class="empty-state"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>
-          </tbody>
+          <tbody id="user-tbody"><tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══ ADMIN ══ -->
+<!-- ADMIN -->
 <div class="page" id="page-admin">
   <div class="dash-inner">
     <div class="dash-header">
-      <div class="dash-mono">// PANEL ADMINISTRADOR</div>
+      <div class="mono mb-4">// PANEL ADMINISTRADOR</div>
       <h2>Panel de Administración</h2>
-      <p class="text-muted">Gestión de reuniones, usuarios y asistencia</p>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:4px">Gestión de reuniones, usuarios y asistencia</p>
     </div>
-
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:32px" id="admin-stats"></div>
-
-    <!-- REUNIONES -->
     <div class="card">
       <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-        <div><div class="mono">REUNIONES</div><p style="font-size:.82rem;color:var(--muted);margin-top:2px">Crear, editar y eliminar</p></div>
+        <div><div class="mono">REUNIONES</div></div>
         <button class="btn btn-primary btn-sm" onclick="openMeetingModal()">+ Nueva Reunión</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Acciones</th></tr></thead>
-          <tbody id="admin-meetings-tbody">
-            <tr><td colspan="5"><div class="empty-state"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>
-          </tbody>
+          <tbody id="admin-meetings-tbody"><tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
-
-    <div class="section-divider"></div>
-
-    <!-- USUARIOS -->
+    <div class="divider"></div>
     <div class="card">
       <div class="mono mb-4">USUARIOS REGISTRADOS</div>
-      <div id="admin-users-list"><div class="empty-state"><div class="ei">👥</div><p>Cargando...</p></div></div>
+      <div id="admin-users-list"><div class="empty"><div class="ei">👥</div><p>Cargando...</p></div></div>
     </div>
-
-    <div class="section-divider"></div>
-
-    <!-- ASISTENCIA -->
+    <div class="divider"></div>
     <div class="card">
       <div class="mono mb-4">REGISTRO DE ASISTENCIA</div>
       <div class="form-group" style="max-width:400px">
         <label>Seleccionar Reunión</label>
-        <select id="att-meeting-select" onchange="loadAttendance()">
-          <option value="">— Selecciona una reunión —</option>
-        </select>
+        <select id="att-select" onchange="loadAttendance()"><option value="">— Selecciona una reunión —</option></select>
       </div>
-      <div id="attendance-panel" style="display:none">
+      <div id="att-panel" style="display:none">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Usuario</th><th>Email</th><th>Estado actual</th><th>Cambiar</th></tr></thead>
-            <tbody id="attendance-tbody"></tbody>
+            <thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Cambiar</th></tr></thead>
+            <tbody id="att-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -294,596 +258,521 @@ canvas#cam-canvas{display:none}
   </div>
 </div>
 
-<!-- ══ MODAL CÁMARA ══ -->
+<!-- MODAL CÁMARA -->
 <div class="modal-overlay" id="modal-camera">
   <div class="cam-modal">
-    <button class="modal-close" onclick="closeCameraModal()">✕</button>
-    <h3 style="margin-bottom:6px">Foto <span id="cam-slot-label">1</span> de 10</h3>
+    <button class="modal-close" onclick="closeCam()">✕</button>
+    <h3 style="margin-bottom:6px">Foto <span id="cam-slot-num">1</span> de 10</h3>
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px">Toma o sube la foto</p>
     <div class="cam-tabs">
-      <div class="cam-tab active" id="cam-tab-live" onclick="switchCamTab('live')">📷 Tomar foto</div>
-      <div class="cam-tab" id="cam-tab-upload" onclick="switchCamTab('upload')">📁 Subir archivo</div>
+      <div class="cam-tab active" id="ctab-live" onclick="setCamTab('live')">📷 Tomar foto</div>
+      <div class="cam-tab" id="ctab-upload" onclick="setCamTab('upload')">📁 Subir archivo</div>
     </div>
-    <div id="cam-panel-live">
+    <div id="cpanel-live">
       <div class="video-wrap">
         <video id="cam-video" autoplay playsinline muted></video>
-        <div class="scan-line-cam"></div>
-        <div class="cam-corners"><span></span><span></span><span></span><span></span></div>
+        <div class="scan-line"></div>
+        <div class="corners"><span></span><span></span><span></span><span></span></div>
       </div>
       <canvas id="cam-canvas"></canvas>
       <div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm w-full" onclick="switchCamera()">🔄 Girar</button>
-        <button class="btn btn-primary w-full" onclick="capturePhoto()">📸 Capturar</button>
+        <button class="btn btn-ghost btn-sm w-full" onclick="flipCam()">🔄 Girar</button>
+        <button class="btn btn-primary w-full" id="btn-capture" onclick="doCapture()">📸 Capturar</button>
       </div>
-      <p id="cam-error" style="font-size:.75rem;color:var(--accent3);margin-top:10px;display:none;text-align:center"></p>
+      <p id="cam-err" style="font-size:.75rem;color:var(--accent3);margin-top:10px;display:none;text-align:center"></p>
     </div>
-    <div id="cam-panel-upload" style="display:none">
-      <div class="upload-zone" onclick="document.getElementById('photo-file-input').click()">
+    <div id="cpanel-upload" style="display:none">
+      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
         <div style="font-size:2.2rem;margin-bottom:8px">🖼️</div>
         <p style="font-size:.85rem;color:var(--muted)">Clic para seleccionar imagen</p>
         <p style="font-size:.72rem;color:var(--muted);margin-top:4px">JPG, PNG, WEBP — máx. 10 MB</p>
       </div>
-      <input type="file" id="photo-file-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)"/>
+      <input type="file" id="file-input" accept="image/*" style="display:none" onchange="doUpload(event)"/>
     </div>
   </div>
 </div>
 
-<!-- ══ MODAL REUNIÓN ══ -->
+<!-- MODAL CONFIRMAR FOTO -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="cam-modal" style="text-align:center">
+    <h3 style="margin-bottom:12px">¿Usar esta foto?</h3>
+    <img id="confirm-img" style="width:100%;border-radius:12px;margin-bottom:16px;max-height:280px;object-fit:cover"/>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">¿La foto muestra claramente <strong style="color:var(--text)">tu rostro</strong>?</p>
+    <div class="flex gap-2">
+      <button onclick="confirmPhoto(false)" class="btn btn-danger w-full">✗ No, repetir</button>
+      <button onclick="confirmPhoto(true)" class="btn btn-primary w-full">✓ Sí, usar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REUNIÓN -->
 <div class="modal-overlay" id="modal-meeting">
   <div class="modal">
     <button class="modal-close" onclick="closeMeetingModal()">✕</button>
-    <h3 id="modal-meeting-title">Nueva Reunión</h3>
+    <h3 id="meeting-modal-title">Nueva Reunión</h3>
     <input type="hidden" id="meeting-edit-id"/>
     <div class="form-group"><label>Fecha</label><input type="date" id="meeting-fecha"/></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <div class="form-group" style="margin-bottom:0"><label>Hora inicio</label><input type="time" id="meeting-hora"/></div>
       <div class="form-group" style="margin-bottom:0"><label>Hora fin</label><input type="time" id="meeting-hora-fin"/></div>
     </div>
-    <div class="form-group mt-4"><label>Motivo / Descripción</label><textarea id="meeting-motivo" rows="3" placeholder="Descripción de la reunión..."></textarea></div>
+    <div class="form-group mt-4"><label>Motivo</label><textarea id="meeting-motivo" rows="3" placeholder="Descripción..."></textarea></div>
     <div class="flex gap-2 mt-4">
       <button class="btn btn-ghost w-full" onclick="closeMeetingModal()">Cancelar</button>
-      <button class="btn btn-primary w-full" onclick="saveMeeting()" id="btn-save-meeting">Guardar</button>
+      <button class="btn btn-primary w-full" id="btn-save-meeting" onclick="saveMeeting()">Guardar</button>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.1.0/dist/blazeface.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ══ CONFIG ══
-const SUPABASE_URL = 'https://jvqdohmytnzfvjcthxgr.supabase.co';
+// ════════════════════════════════
+//  CONFIG
+// ════════════════════════════════
+const SUPABASE_URL  = 'https://jvqdohmytnzfvjcthxgr.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2cWRvaG15dG56ZnZqY3RoeGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzkwNDUsImV4cCI6MjA5NTMxNTA0NX0.wwp2sDmaFf_1dPBdNqTx2slbAbFGbOMyQihSF7yd7z8';
-const ADMIN_EMAIL  = 'admin@sistemvis.com'; // ← cambia por tu correo admin
-const TOTAL_PHOTOS = 10;
-
+const ADMIN_EMAIL   = 'admin@sistemvis.com';
+const TOTAL_PHOTOS  = 10;
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ══ FACE DETECTION (TensorFlow.js BlazeFace - 100% local) ══
-let blazeFaceModel = null;
+// ════════════════════════════════
+//  STATE
+// ════════════════════════════════
+let me         = null;   // auth user
+let profile    = null;   // users row
+let slots      = Array(TOTAL_PHOTOS).fill(null);
+let curSlot    = -1;
+let camStream  = null;
+let facing     = 'user';
+let meetings   = [];
+let users      = [];
+let pending    = null;   // dataURL waiting confirm
+let loaded     = false;  // prevent double-load
 
-async function loadFaceModel(){
+// ════════════════════════════════
+//  UTILS
+// ════════════════════════════════
+function gel(id){ return document.getElementById(id); }
+function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); gel('page-'+id).classList.add('active'); }
+function showLoad(t){ gel('loading-overlay').classList.add('show'); gel('loading-text').textContent = t||'CARGANDO...'; }
+function hideLoad(){ gel('loading-overlay').classList.remove('show'); }
+function fdate(d){ if(!d)return'—'; const[y,m,day]=d.split('-'); return day+'/'+m+'/'+y; }
+function ftime(t){ return t ? t.substring(0,5) : '—'; }
+function toast(msg, type){
+  const d=document.createElement('div');
+  d.className='ti '+(type||'info');
+  d.innerHTML='<span>'+(type==='success'?'✓':type==='error'?'✗':'ℹ')+'</span><span>'+msg+'</span>';
+  gel('toast').appendChild(d);
+  setTimeout(()=>d.remove(),4200);
+}
+
+// ════════════════════════════════
+//  NAV
+// ════════════════════════════════
+function goHome(){ if(profile) profile.role==='admin' ? showPage('admin') : showPage('dashboard'); }
+function doLogout(){ loaded=false; sb.auth.signOut(); }
+
+// ════════════════════════════════
+//  AUTH TABS
+// ════════════════════════════════
+function switchTab(tab){
+  gel('tab-login').classList.toggle('active', tab==='login');
+  gel('tab-register').classList.toggle('active', tab==='register');
+  gel('form-login').style.display    = tab==='login'    ? 'block' : 'none';
+  gel('form-register').style.display = tab==='register' ? 'block' : 'none';
+  if(tab==='register') renderSlots();
+}
+
+// ════════════════════════════════
+//  PHOTO SLOTS
+// ════════════════════════════════
+function renderSlots(){
+  const g = gel('photos-grid');
+  if(!g) return;
+  g.innerHTML = '';
+  for(let i=0;i<TOTAL_PHOTOS;i++){
+    const s = document.createElement('div');
+    s.className = 'photo-slot' + (slots[i]?' filled':'');
+    if(slots[i]){
+      s.innerHTML = '<img src="'+slots[i]+'" alt="foto '+(i+1)+'"/><button class="rdel" onclick="delSlot('+i+',event)">✕</button>';
+    } else {
+      s.innerHTML = '<span class="sico">📷</span><span class="snum">'+(i+1)+'</span>';
+      s.onclick = function(){ openCam(i); };
+    }
+    g.appendChild(s);
+  }
+}
+
+function delSlot(i, e){ e.stopPropagation(); slots[i]=null; renderSlots(); }
+
+// ════════════════════════════════
+//  CAMERA
+// ════════════════════════════════
+async function openCam(idx){
+  curSlot = idx;
+  gel('cam-slot-num').textContent = idx+1;
+  gel('cam-err').style.display = 'none';
+  gel('modal-camera').classList.add('open');
+  await setCamTab('live');
+}
+
+function closeCam(){
+  gel('modal-camera').classList.remove('open');
+}
+
+async function setCamTab(tab){
+  gel('ctab-live').classList.toggle('active', tab==='live');
+  gel('ctab-upload').classList.toggle('active', tab==='upload');
+  gel('cpanel-live').style.display   = tab==='live'   ? 'block':'none';
+  gel('cpanel-upload').style.display = tab==='upload' ? 'block':'none';
+  if(tab==='live') await startCam();
+}
+
+async function startCam(){
+  if(camStream){ gel('cam-video').srcObject = camStream; return; }
   try{
-    blazeFaceModel = await blazeface.load();
-    console.log('BlazeFace model loaded');
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:640},height:{ideal:640}},audio:false});
+    gel('cam-video').srcObject = camStream;
+    gel('cam-err').style.display = 'none';
   }catch(e){
-    console.warn('BlazeFace load error:', e);
-  }
-}
-loadFaceModel();
-
-function dataURLtoImageElement(dataURL){
-  return new Promise((resolve, reject)=>{
-    const img = new Image();
-    img.onload  = ()=> resolve(img);
-    img.onerror = ()=> reject(new Error('Image load failed'));
-    img.src = dataURL;
-  });
-}
-
-async function verifyFace(dataURL){
-  if(!blazeFaceModel){
-    // Model not loaded yet - try once more
-    try{
-      blazeFaceModel = await blazeface.load();
-    }catch(e){
-      toast('⚠️ Detector no disponible. Foto aceptada sin verificación.','info');
-      return true;
-    }
-  }
-  try{
-    const img = await dataURLtoImageElement(dataURL);
-    // Draw to canvas so TF can read pixel data
-    const c = document.createElement('canvas');
-    c.width = img.naturalWidth; c.height = img.naturalHeight;
-    c.getContext('2d').drawImage(img, 0, 0);
-    const predictions = await blazeFaceModel.estimateFaces(c, false);
-    if(predictions.length === 0){
-      toast('❌ No se detectó ningún rostro. Asegúrate que tu cara sea visible y bien iluminada.','error');
-      return false;
-    }
-    if(predictions.length > 1){
-      toast(`❌ Se detectaron ${predictions.length} rostros. La foto debe ser solo de una persona.`,'error');
-      return false;
-    }
-    return true;
-  }catch(e){
-    console.warn('verifyFace error:', e);
-    toast('⚠️ Error al verificar. Foto aceptada.','info');
-    return true;
+    gel('cam-err').style.display='block';
+    gel('cam-err').textContent='Sin acceso a cámara. Usa "Subir archivo".';
   }
 }
 
-window.removePhoto = (idx,e) => { e.stopPropagation(); photoSlots[idx]=null; renderPhotoSlots(); };
-
-// ══ CAMERA ══
-async function initCamera(){
-  try{
-    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode,width:{ideal:640},height:{ideal:640}},audio:false});
-  }catch(e){ cameraStream=null; }
+async function flipCam(){
+  facing = facing==='user'?'environment':'user';
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
+  await startCam();
 }
 
-window.openCameraModal = async idx => {
-  currentSlot=idx;
-  $('cam-slot-label').textContent=idx+1;
-  $('cam-error').style.display='none';
-  $('modal-camera').classList.add('open');
-  await switchCamTab('live');
-};
-
-window.closeCameraModal = () => $('modal-camera').classList.remove('open');
-
-window.switchCamTab = async tab => {
-  $('cam-tab-live').classList.toggle('active', tab==='live');
-  $('cam-tab-upload').classList.toggle('active', tab==='upload');
-  $('cam-panel-live').style.display   = tab==='live'   ? 'block' : 'none';
-  $('cam-panel-upload').style.display = tab==='upload' ? 'block' : 'none';
-  if(tab==='live'){
-    if(!cameraStream) await initCamera();
-    if(cameraStream) $('cam-video').srcObject=cameraStream;
-    else { $('cam-error').style.display='block'; $('cam-error').textContent='Sin acceso a cámara. Usa "Subir archivo".'; }
-  }
-};
-
-window.switchCamera = async () => {
-  facingMode = facingMode==='user'?'environment':'user';
-  if(cameraStream){ cameraStream.getTracks().forEach(t=>t.stop()); cameraStream=null; }
-  await initCamera();
-  if(cameraStream) $('cam-video').srcObject=cameraStream;
-};
-
-window.capturePhoto = async () => {
-  const vid=$('cam-video');
+function doCapture(){
+  const vid = gel('cam-video');
   if(!vid.srcObject){ toast('Cámara no disponible','error'); return; }
-  const canvas=$('cam-canvas');
-  canvas.width=vid.videoWidth||640; canvas.height=vid.videoHeight||640;
-  const ctx=canvas.getContext('2d');
-  if(facingMode==='user'){ ctx.translate(canvas.width,0); ctx.scale(-1,1); }
+  const c = gel('cam-canvas');
+  c.width=vid.videoWidth||640; c.height=vid.videoHeight||640;
+  const ctx = c.getContext('2d');
+  if(facing==='user'){ ctx.translate(c.width,0); ctx.scale(-1,1); }
   ctx.drawImage(vid,0,0);
-  const dataUrl=canvas.toDataURL('image/jpeg',.85);
-  const btn=$('btn-capture');
-  btn.disabled=true; btn.innerHTML='<div class="loader"></div> Verificando...';
-  const ok = await verifyFace(dataUrl);
-  btn.disabled=false; btn.innerHTML='📸 Capturar';
-  if(!ok) return;
-  photoSlots[currentSlot]=dataUrl;
-  renderPhotoSlots();
-  closeCameraModal();
-  toast(`Foto ${currentSlot+1} capturada ✓`,'success');
-};
-
-window.handlePhotoUpload = async e => {
-  const file=e.target.files[0]; if(!file) return;
-  if(file.size>10*1024*1024){ toast('Imagen muy grande (máx 10MB)','error'); return; }
-  const reader=new FileReader();
-  reader.onload=async ev=>{
-    const dataUrl=ev.target.result;
-    // Show verifying state
-    const zone=document.querySelector('.upload-zone');
-    if(zone){ zone.innerHTML='<div style="font-size:1.5rem">🔍</div><p style="font-size:.85rem;color:var(--muted)">Verificando cara...</p>'; }
-    const ok = await verifyFace(dataUrl);
-    if(!ok){
-      // Restore upload zone
-      if(zone){ zone.innerHTML='<div style="font-size:2.2rem;margin-bottom:8px">🖼️</div><p style="font-size:.85rem;color:var(--muted)">Clic para seleccionar imagen</p><p style="font-size:.72rem;color:var(--muted);margin-top:4px">JPG, PNG, WEBP — máx. 10 MB</p>'; }
-      return;
-    }
-    photoSlots[currentSlot]=dataUrl;
-    renderPhotoSlots();
-    closeCameraModal();
-    toast(`Foto ${currentSlot+1} cargada ✓`,'success');
-  };
-  reader.readAsDataURL(file);
-  e.target.value='';
-};
-
-// ══ FACE VERIFICATION via Claude API ══
-async function verifyFace(dataUrl){
-  try{
-    // Extract base64 data (remove data:image/jpeg;base64, prefix)
-    const base64 = dataUrl.split(',')[1];
-    const mediaType = dataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
-
-    const response = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:100,
-        messages:[{
-          role:'user',
-          content:[
-            {
-              type:'image',
-              source:{type:'base64', media_type:mediaType, data:base64}
-            },
-            {
-              type:'text',
-              text:'Does this image clearly show a single human face suitable for facial recognition? Answer with only YES or NO. YES if there is exactly one clearly visible human face. NO if there is no face, multiple faces, a face that is too blurry/dark/covered, or if it is not a photo of a person.'
-            }
-          ]
-        }]
-      })
-    });
-
-    const result = await response.json();
-    const answer = result?.content?.[0]?.text?.trim().toUpperCase();
-
-    if(answer === 'YES') return true;
-
-    // Show specific error
-    toast('❌ No se detectó una cara válida. Sube una foto clara de tu rostro.','error');
-    return false;
-
-  }catch(e){
-    console.warn('Face verify error:', e);
-    // If API fails, allow the photo (don't block registration)
-    toast('⚠️ No se pudo verificar la foto. Asegúrate que muestre tu cara.','info');
-    return true;
-  }
+  showConfirm(c.toDataURL('image/jpeg',.85));
 }
 
-// ══ REGISTER ══
-window.doRegister = async () => {
-  const nombre  = $('reg-nombre').value.trim();
-  const apellido= $('reg-apellido').value.trim();
-  const email   = $('reg-email').value.trim();
-  const password= $('reg-password').value;
+function doUpload(e){
+  const file = e.target.files[0]; if(!file) return;
+  if(file.size>10*1024*1024){ toast('Imagen muy grande (máx 10MB)','error'); return; }
+  const r = new FileReader();
+  r.onload = ev => showConfirm(ev.target.result);
+  r.readAsDataURL(file);
+  e.target.value='';
+}
 
+function showConfirm(dataURL){
+  pending = dataURL;
+  gel('confirm-img').src = dataURL;
+  gel('modal-confirm').classList.add('open');
+}
+
+function confirmPhoto(yes){
+  gel('modal-confirm').classList.remove('open');
+  if(!yes){ pending=null; return; }
+  slots[curSlot] = pending;
+  pending = null;
+  renderSlots();
+  closeCam();
+  toast('Foto '+(curSlot+1)+' guardada ✓','success');
+}
+
+// ════════════════════════════════
+//  REGISTER
+// ════════════════════════════════
+async function doRegister(){
+  const nombre   = gel('reg-nombre').value.trim();
+  const apellido = gel('reg-apellido').value.trim();
+  const email    = gel('reg-email').value.trim();
+  const password = gel('reg-password').value;
   if(!nombre||!apellido||!email||!password){ toast('Completa todos los campos','error'); return; }
   if(password.length<6){ toast('Contraseña mínimo 6 caracteres','error'); return; }
-  const filled=photoSlots.filter(Boolean);
-  if(filled.length<TOTAL_PHOTOS){ toast(`Faltan ${TOTAL_PHOTOS-filled.length} fotos`,'error'); return; }
+  const filled = slots.filter(Boolean);
+  if(filled.length<TOTAL_PHOTOS){ toast('Faltan '+(TOTAL_PHOTOS-filled.length)+' fotos','error'); return; }
 
-  showLoading('CREANDO CUENTA...');
+  showLoad('CREANDO CUENTA...');
   try{
-    const {data:authData,error:authErr}=await sb.auth.signUp({email,password,options:{emailRedirectTo:null}});
-    if(authErr) throw authErr;
-    if(!authData.user) throw new Error('No se pudo crear usuario. Desactiva "Confirm email" en Supabase → Auth → Providers → Email.');
-    const uid=authData.user.id;
-    const role=email===ADMIN_EMAIL?'admin':'user';
+    const {data:auth, error:aErr} = await sb.auth.signUp({email, password, options:{emailRedirectTo:null}});
+    if(aErr) throw aErr;
+    if(!auth.user) throw new Error('Desactiva "Confirm email" en Supabase → Auth → Providers → Email');
+    const uid  = auth.user.id;
+    const role = email===ADMIN_EMAIL ? 'admin' : 'user';
 
-    // Guardar perfil primero
-    showLoading('GUARDANDO PERFIL...');
-    const {error:dbErr}=await sb.from('users').insert({id:uid,nombre,apellido,email,role,photo_urls:[]});
-    if(dbErr) throw dbErr;
+    showLoad('GUARDANDO PERFIL...');
+    const {error:dErr} = await sb.from('users').insert({id:uid,nombre,apellido,email,role,photo_urls:[]});
+    if(dErr) throw dErr;
 
-    // Subir 10 fotos
-    const folderName=`${nombre}_${apellido}`.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_\-]/g,'_');
-    const photoURLs=[];
+    const folder = (nombre+'_'+apellido).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]/g,'_');
+    const urls = [];
     for(let i=0;i<TOTAL_PHOTOS;i++){
-      showLoading(`SUBIENDO FOTO ${i+1}/${TOTAL_PHOTOS}...`);
+      showLoad('SUBIENDO FOTO '+(i+1)+'/'+TOTAL_PHOTOS+'...');
       try{
-        const res=await fetch(photoSlots[i]);
-        const blob=await res.blob();
-        const path=`${folderName}/photo_${i}.jpg`;
-        const {error:upErr}=await sb.storage.from('fotos').upload(path,blob,{contentType:'image/jpeg',upsert:true});
-        if(upErr){ toast(`Error foto ${i+1}: ${upErr.message}`,'error'); photoURLs.push(photoSlots[i]); continue; }
-        const {data:urlData}=sb.storage.from('fotos').getPublicUrl(path);
-        photoURLs.push(urlData.publicUrl);
-      }catch(e){ photoURLs.push(photoSlots[i]); }
+        const blob = await (await fetch(slots[i])).blob();
+        const path = folder+'/photo_'+i+'.jpg';
+        const {error:uErr} = await sb.storage.from('fotos').upload(path, blob, {contentType:'image/jpeg',upsert:true});
+        if(uErr){ urls.push(slots[i]); continue; }
+        const {data:ud} = sb.storage.from('fotos').getPublicUrl(path);
+        urls.push(ud.publicUrl);
+      }catch(){ urls.push(slots[i]); }
     }
+    await sb.from('users').update({photo_urls:urls}).eq('id',uid);
 
-    // Actualizar URLs
-    showLoading('FINALIZANDO...');
-    await sb.from('users').update({photo_urls:photoURLs}).eq('id',uid);
-
-    toast('¡Cuenta creada exitosamente! ✓','success');
-    hideLoading();
-
-    // Limpiar formulario
-    $('reg-nombre').value=''; $('reg-apellido').value='';
-    $('reg-email').value='';  $('reg-password').value='';
-    photoSlots=Array(TOTAL_PHOTOS).fill(null);
-    renderPhotoSlots();
-
-  }catch(err){
-    hideLoading();
-    console.error(err);
-    toast(err.message||'Error inesperado','error');
+    toast('¡Cuenta creada! ✓','success');
+    gel('reg-nombre').value=''; gel('reg-apellido').value='';
+    gel('reg-email').value='';  gel('reg-password').value='';
+    slots = Array(TOTAL_PHOTOS).fill(null);
+    renderSlots();
+    hideLoad();
+  }catch(e){
+    hideLoad();
+    toast(e.message||'Error inesperado','error');
   }
-};
-
-// ══ LOGIN ══
-window.doLogin = async () => {
-  const email=$('login-email').value.trim();
-  const password=$('login-password').value;
-  if(!email||!password){ toast('Ingresa correo y contraseña','error'); return; }
-  showLoading('AUTENTICANDO...');
-  const {error}=await sb.auth.signInWithPassword({email,password});
-  if(error){ hideLoading(); toast(error.message,'error'); }
-};
-
-// ══ AUTH STATE ══
-let _done = false;
-
-async function goToDashboard(user){
-  if(_done) return;
-  _done = true;
-  currentUser = user;
-  try {
-    const {data} = await sb.from('users').select('*').eq('id', user.id).maybeSingle();
-    if(!data){ _done=false; await sb.auth.signOut(); return; }
-    currentProfile = data;
-    $('main-nav').style.display = 'flex';
-    $('nav-username').textContent = `${data.nombre} ${data.apellido}`;
-    const badge = $('nav-role-badge');
-    if(data.role==='admin'){ badge.textContent='ADMIN'; badge.className='nav-badge admin'; }
-    else { badge.textContent='USUARIO'; badge.className='nav-badge'; }
-    if(data.role==='admin'){ showPage('admin'); loadAdminData(); }
-    else { showPage('dashboard'); loadUserDashboard(); }
-  } catch(e){ _done=false; await sb.auth.signOut(); }
-  finally { hideLoading(); }
 }
 
-// Safety: si en 5s sigue cargando, manda al login
-const _safetyTimer = setTimeout(()=>{
-  if($('loading-overlay').classList.contains('show')){ hideLoading(); showPage('auth'); }
-}, 5000);
+// ════════════════════════════════
+//  LOGIN
+// ════════════════════════════════
+async function doLogin(){
+  const email    = gel('login-email').value.trim();
+  const password = gel('login-password').value;
+  if(!email||!password){ toast('Ingresa correo y contraseña','error'); return; }
+  showLoad('AUTENTICANDO...');
+  const {error} = await sb.auth.signInWithPassword({email,password});
+  if(error){ hideLoad(); toast(error.message,'error'); }
+}
 
+// ════════════════════════════════
+//  SESSION - single entry point
+// ════════════════════════════════
+async function loadDashboard(user){
+  if(loaded) return;
+  loaded = true;
+  me = user;
+  showLoad('CARGANDO PERFIL...');
+  try{
+    const {data} = await sb.from('users').select('*').eq('id',user.id).maybeSingle();
+    if(!data){ loaded=false; hideLoad(); await sb.auth.signOut(); toast('Perfil no encontrado','info'); return; }
+    profile = data;
+    gel('main-nav').style.display = 'flex';
+    gel('nav-username').textContent = data.nombre+' '+data.apellido;
+    const b = gel('nav-role-badge');
+    b.textContent = data.role==='admin'?'ADMIN':'USUARIO';
+    b.className   = data.role==='admin'?'nav-badge admin':'nav-badge';
+    hideLoad();
+    if(data.role==='admin'){ showPage('admin'); loadAdmin(); }
+    else { showPage('dashboard'); loadUserDash(); }
+  }catch(e){ loaded=false; hideLoad(); toast('Error de conexión','error'); }
+}
+
+// Safety net: if still loading after 6s → go to login
+const safetyTimer = setTimeout(()=>{
+  if(gel('loading-overlay').classList.contains('show')){ hideLoad(); showPage('auth'); }
+},6000);
+
+// Check existing session on page load
 sb.auth.getSession().then(({data:{session}})=>{
-  clearTimeout(_safetyTimer);
-  if(session?.user) goToDashboard(session.user);
-  else { hideLoading(); showPage('auth'); }
+  clearTimeout(safetyTimer);
+  if(session?.user) loadDashboard(session.user);
+  else hideLoad();
 });
 
+// Handle live events only
 sb.auth.onAuthStateChange((event, session)=>{
   if(event==='SIGNED_OUT'){
-    _done=false; currentUser=null; currentProfile=null;
-    $('main-nav').style.display='none'; hideLoading(); showPage('auth');
+    loaded=false; me=null; profile=null;
+    gel('main-nav').style.display='none';
+    hideLoad(); showPage('auth');
   }
-  if(event==='SIGNED_IN' && session?.user && !_done){
-    clearTimeout(_safetyTimer);
-    goToDashboard(session.user);
+  if(event==='SIGNED_IN' && session?.user && !loaded){
+    clearTimeout(safetyTimer);
+    loadDashboard(session.user);
   }
 });
 
-// ══ USER DASHBOARD ══
-async function loadUserDashboard(){
-  $('dash-welcome').textContent=`Hola, ${currentProfile.nombre} 👋`;
-  const tbody=$('user-meetings-tbody');
-  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
-  const {data:meetings}=await sb.from('meetings').select('*').order('fecha',{ascending:true});
-  if(!meetings||meetings.length===0){
-    tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="ei">📅</div><p>No hay reuniones programadas</p></div></td></tr>';
+// ════════════════════════════════
+//  USER DASHBOARD
+// ════════════════════════════════
+async function loadUserDash(){
+  gel('dash-welcome').textContent = 'Hola, '+profile.nombre+' 👋';
+  const tb = gel('user-tbody');
+  tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
+  const {data:mtgs} = await sb.from('meetings').select('*').order('fecha',{ascending:true});
+  if(!mtgs||!mtgs.length){
+    tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>';
     return;
   }
-  tbody.innerHTML='';
-  for(const m of meetings){
-    const {data:att}=await sb.from('attendance').select('present').eq('meeting_id',m.id).eq('user_id',currentUser.id).maybeSingle();
-    const present=att?.present;
-    let statusHtml;
-    if(present===true)  statusHtml=`<span class="status status-present"><span class="status-dot"></span>Presente</span>`;
-    else if(present===false) statusHtml=`<span class="status status-absent"><span class="status-dot"></span>Ausente</span>`;
-    else statusHtml=`<span class="status status-none"><span class="status-dot"></span>Sin registro</span>`;
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${formatDate(m.fecha)}</td><td>${formatTime(m.hora)}</td><td>${formatTime(m.hora_fin)}</td><td>${m.motivo}</td><td>${statusHtml}</td>`;
-    tbody.appendChild(tr);
+  tb.innerHTML='';
+  for(const m of mtgs){
+    const {data:att} = await sb.from('attendance').select('present').eq('meeting_id',m.id).eq('user_id',me.id).maybeSingle();
+    const p = att?.present;
+    const sh = p===true
+      ? '<span class="status sp"><span class="sdot"></span>Presente</span>'
+      : p===false
+      ? '<span class="status sa"><span class="sdot"></span>Ausente</span>'
+      : '<span class="status sn"><span class="sdot"></span>Sin registro</span>';
+    const tr = document.createElement('tr');
+    tr.innerHTML='<td>'+fdate(m.fecha)+'</td><td>'+ftime(m.hora)+'</td><td>'+ftime(m.hora_fin)+'</td><td>'+m.motivo+'</td><td>'+sh+'</td>';
+    tb.appendChild(tr);
   }
 }
 
-// ══ ADMIN DATA ══
-async function loadAdminData(){ await Promise.all([loadAdminMeetings(),loadAdminUsers()]); updateAdminStats(); }
+// ════════════════════════════════
+//  ADMIN
+// ════════════════════════════════
+async function loadAdmin(){ await Promise.all([loadMeetings(), loadUsers()]); renderStats(); }
 
-async function loadAdminMeetings(){
-  const tbody=$('admin-meetings-tbody');
-  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
-  const {data}=await sb.from('meetings').select('*').order('fecha',{ascending:true});
-  allMeetings=data||[];
-
-  // Update attendance select
-  const sel=$('att-meeting-select');
+async function loadMeetings(){
+  const tb = gel('admin-meetings-tbody');
+  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
+  const {data} = await sb.from('meetings').select('*').order('fecha',{ascending:true});
+  meetings = data||[];
+  const sel = gel('att-select');
   sel.innerHTML='<option value="">— Selecciona una reunión —</option>';
-  allMeetings.forEach(m=>{
-    const o=document.createElement('option');
-    o.value=m.id;
-    o.textContent=`${formatDate(m.fecha)} ${formatTime(m.hora)} · ${m.motivo}`;
-    sel.appendChild(o);
-  });
-
-  if(!allMeetings.length){
-    tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><div class="ei">📅</div><p>No hay reuniones. Crea una.</p></div></td></tr>';
-    return;
-  }
-  tbody.innerHTML='';
-  allMeetings.forEach(m=>{
+  meetings.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=fdate(m.fecha)+' '+ftime(m.hora)+' · '+m.motivo; sel.appendChild(o); });
+  if(!meetings.length){ tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>'; return; }
+  tb.innerHTML='';
+  meetings.forEach(m=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`
-      <td>${formatDate(m.fecha)}</td>
-      <td>${formatTime(m.hora)}</td>
-      <td>${formatTime(m.hora_fin)}</td>
-      <td>${m.motivo}</td>
-      <td>
-        <div class="flex gap-2">
-          <button class="btn btn-ghost btn-sm" onclick="editMeeting('${m.id}')">✏️ Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteMeeting('${m.id}')">🗑 Borrar</button>
-        </div>
-      </td>`;
-    tbody.appendChild(tr);
+    tr.innerHTML='<td>'+fdate(m.fecha)+'</td><td>'+ftime(m.hora)+'</td><td>'+ftime(m.hora_fin)+'</td><td>'+m.motivo+'</td>'
+      +'<td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editMeeting(\''+m.id+'\')">✏️ Editar</button>'
+      +'<button class="btn btn-danger btn-sm" onclick="deleteMeeting(\''+m.id+'\')">🗑 Borrar</button></div></td>';
+    tb.appendChild(tr);
   });
 }
 
-async function loadAdminUsers(){
-  const list=$('admin-users-list');
-  list.innerHTML='<div style="padding:20px;text-align:center"><div class="loader" style="margin:auto"></div></div>';
-  const {data}=await sb.from('users').select('*').order('nombre');
-  allUsers=data||[];
-  if(!allUsers.length){ list.innerHTML='<div class="empty-state"><div class="ei">👥</div><p>No hay usuarios</p></div>'; return; }
-  list.innerHTML='';
-  allUsers.forEach(u=>{
-    const row=document.createElement('div'); row.className='user-row';
-    const avatar=u.photo_urls&&u.photo_urls[0]?`<img src="${u.photo_urls[0]}" alt="${u.nombre}"/>`:`<span>👤</span>`;
-    row.innerHTML=`
-      <div class="user-avatar">${avatar}</div>
-      <div class="user-info"><div class="name">${u.nombre} ${u.apellido}</div><div class="email">${u.email}</div></div>
-      <span class="chip ${u.role==='admin'?'admin':''}">${u.role==='admin'?'ADMIN':'USUARIO'}</span>`;
-    list.appendChild(row);
+async function loadUsers(){
+  const el = gel('admin-users-list');
+  el.innerHTML='<div style="padding:20px;text-align:center"><div class="loader" style="margin:auto"></div></div>';
+  const {data} = await sb.from('users').select('*').order('nombre');
+  users = data||[];
+  if(!users.length){ el.innerHTML='<div class="empty"><div class="ei">👥</div><p>No hay usuarios</p></div>'; return; }
+  el.innerHTML='';
+  users.forEach(u=>{
+    const r=document.createElement('div'); r.className='user-row';
+    const av = u.photo_urls&&u.photo_urls[0]?'<img src="'+u.photo_urls[0]+'" alt=""/>':'<span>👤</span>';
+    r.innerHTML='<div class="uav">'+av+'</div><div class="uinfo"><div class="name">'+u.nombre+' '+u.apellido+'</div><div class="email">'+u.email+'</div></div>'
+      +'<span class="chip '+(u.role==='admin'?'admin':'')+'">'+( u.role==='admin'?'ADMIN':'USUARIO')+'</span>';
+    el.appendChild(r);
   });
 }
 
-function updateAdminStats(){
-  $('admin-stats').innerHTML=`
-    <div class="card card-sm" style="text-align:center">
-      <div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:'Share Tech Mono',monospace">${allMeetings.length}</div>
-      <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Reuniones</div>
-    </div>
-    <div class="card card-sm" style="text-align:center">
-      <div style="font-size:2rem;font-weight:800;color:var(--accent2);font-family:'Share Tech Mono',monospace">${allUsers.length}</div>
-      <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Usuarios</div>
-    </div>`;
+function renderStats(){
+  gel('admin-stats').innerHTML=
+    '<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:\'Share Tech Mono\',monospace">'+meetings.length+'</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Reuniones</div></div>'
+   +'<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent2);font-family:\'Share Tech Mono\',monospace">'+users.length+'</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Usuarios</div></div>';
 }
 
-// ══ MEETINGS CRUD ══
-window.openMeetingModal = () => {
-  $('modal-meeting-title').textContent='Nueva Reunión';
-  $('meeting-edit-id').value='';
-  $('meeting-fecha').value=''; $('meeting-hora').value='';
-  $('meeting-hora-fin').value=''; $('meeting-motivo').value='';
-  $('modal-meeting').classList.add('open');
-};
-window.closeMeetingModal = () => $('modal-meeting').classList.remove('open');
+// ════════════════════════════════
+//  MEETINGS CRUD
+// ════════════════════════════════
+function openMeetingModal(){
+  gel('meeting-modal-title').textContent='Nueva Reunión';
+  gel('meeting-edit-id').value='';
+  gel('meeting-fecha').value=''; gel('meeting-hora').value='';
+  gel('meeting-hora-fin').value=''; gel('meeting-motivo').value='';
+  gel('modal-meeting').classList.add('open');
+}
+function closeMeetingModal(){ gel('modal-meeting').classList.remove('open'); }
 
-window.editMeeting = id => {
-  const m=allMeetings.find(x=>x.id===id); if(!m) return;
-  $('modal-meeting-title').textContent='Editar Reunión';
-  $('meeting-edit-id').value=id;
-  $('meeting-fecha').value=m.fecha||'';
-  $('meeting-hora').value=(m.hora||'').substring(0,5);
-  $('meeting-hora-fin').value=(m.hora_fin||'').substring(0,5);
-  $('meeting-motivo').value=m.motivo||'';
-  $('modal-meeting').classList.add('open');
-};
+function editMeeting(id){
+  const m=meetings.find(x=>x.id===id); if(!m) return;
+  gel('meeting-modal-title').textContent='Editar Reunión';
+  gel('meeting-edit-id').value=id;
+  gel('meeting-fecha').value=m.fecha||'';
+  gel('meeting-hora').value=ftime(m.hora);
+  gel('meeting-hora-fin').value=ftime(m.hora_fin);
+  gel('meeting-motivo').value=m.motivo||'';
+  gel('modal-meeting').classList.add('open');
+}
 
-window.saveMeeting = async () => {
-  const fecha=$('meeting-fecha').value;
-  const hora=$('meeting-hora').value;
-  const hora_fin=$('meeting-hora-fin').value;
-  const motivo=$('meeting-motivo').value.trim();
+async function saveMeeting(){
+  const fecha=gel('meeting-fecha').value;
+  const hora=gel('meeting-hora').value;
+  const hora_fin=gel('meeting-hora-fin').value;
+  const motivo=gel('meeting-motivo').value.trim();
   if(!fecha||!hora||!hora_fin||!motivo){ toast('Completa todos los campos','error'); return; }
-  if(hora>=hora_fin){ toast('La hora de fin debe ser mayor a la hora de inicio','error'); return; }
+  if(hora>=hora_fin){ toast('La hora de fin debe ser mayor a la de inicio','error'); return; }
+  const editId=gel('meeting-edit-id').value;
+  const btn=gel('btn-save-meeting'); btn.disabled=true; btn.innerHTML='<div class="loader"></div>';
 
-  const editId=$('meeting-edit-id').value;
-  const btn=$('btn-save-meeting'); btn.disabled=true; btn.innerHTML='<div class="loader"></div>';
-
-  // ── Verificar conflicto de horario ──
-  // Una reunión A conflicta con B si: A.hora < B.hora_fin AND A.hora_fin > B.hora
-  let q = sb.from('meetings').select('id,hora,hora_fin,motivo')
-    .eq('fecha', fecha)
-    .lt('hora', hora_fin)
-    .gt('hora_fin', hora);
-  if(editId) q = q.neq('id', editId); // excluir la reunión que se está editando
-  const {data:conflicts} = await q;
-
-  if(conflicts && conflicts.length > 0){
-    const c = conflicts[0];
-    btn.disabled=false; btn.innerHTML='Guardar';
-    toast(`⚠️ Horario ocupado: ya existe "${c.motivo}" de ${formatTime(c.hora)} a ${formatTime(c.hora_fin)}`, 'error');
-    return;
-  }
+  // Check conflicts
+  let q=sb.from('meetings').select('id,hora,hora_fin,motivo').eq('fecha',fecha).lt('hora',hora_fin).gt('hora_fin',hora);
+  if(editId) q=q.neq('id',editId);
+  const {data:conf}=await q;
+  if(conf&&conf.length){ btn.disabled=false; btn.innerHTML='Guardar'; toast('⚠️ Horario ocupado: "'+conf[0].motivo+'" de '+ftime(conf[0].hora)+' a '+ftime(conf[0].hora_fin),'error'); return; }
 
   let error;
   if(editId){ ({error}=await sb.from('meetings').update({fecha,hora,hora_fin,motivo}).eq('id',editId)); }
-  else       { ({error}=await sb.from('meetings').insert({fecha,hora,hora_fin,motivo})); }
+  else { ({error}=await sb.from('meetings').insert({fecha,hora,hora_fin,motivo})); }
   btn.disabled=false; btn.innerHTML='Guardar';
   if(error){ toast('Error: '+error.message,'error'); return; }
   toast(editId?'Reunión actualizada ✓':'Reunión creada ✓','success');
-  closeMeetingModal(); await loadAdminMeetings(); updateAdminStats();
-};
+  closeMeetingModal(); await loadMeetings(); renderStats();
+}
 
-window.deleteMeeting = async id => {
-  if(!confirm('¿Eliminar esta reunión? No se puede deshacer.')) return;
-  showLoading('ELIMINANDO...');
-  const {error}=await sb.from('meetings').delete().eq('id',id);
-  hideLoading();
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast('Reunión eliminada','info');
-  await loadAdminMeetings(); updateAdminStats();
-  $('attendance-panel').style.display='none';
-};
+async function deleteMeeting(id){
+  if(!confirm('¿Eliminar esta reunión?')) return;
+  showLoad('ELIMINANDO...');
+  await sb.from('meetings').delete().eq('id',id);
+  hideLoad(); toast('Reunión eliminada','info');
+  gel('att-panel').style.display='none';
+  await loadMeetings(); renderStats();
+}
 
-// ══ ATTENDANCE ══
-window.loadAttendance = async () => {
-  const meetingId=$('att-meeting-select').value;
-  const panel=$('attendance-panel');
-  if(!meetingId){ panel.style.display='none'; return; }
+// ════════════════════════════════
+//  ATTENDANCE
+// ════════════════════════════════
+async function loadAttendance(){
+  const mid=gel('att-select').value;
+  const panel=gel('att-panel');
+  if(!mid){ panel.style.display='none'; return; }
   panel.style.display='block';
-  const tbody=$('attendance-tbody');
-  tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px"><div class="loader" style="margin:auto"></div></td></tr>';
-
-  const {data:attData}=await sb.from('attendance').select('*').eq('meeting_id',meetingId);
-  const attMap={};
-  (attData||[]).forEach(a=>attMap[a.user_id]=a.present);
-
-  const nonAdmins=allUsers.filter(u=>u.role!=='admin');
-  if(!nonAdmins.length){ tbody.innerHTML='<tr><td colspan="4"><div class="empty-state"><p>No hay usuarios</p></div></td></tr>'; return; }
-
-  tbody.innerHTML='';
-  nonAdmins.forEach(u=>{
-    const present=attMap[u.id]; // true / false / undefined
-    let estadoHtml;
-    if(present===true)        estadoHtml=`<span class="status status-present"><span class="status-dot"></span>Presente</span>`;
-    else if(present===false)  estadoHtml=`<span class="status status-absent"><span class="status-dot"></span>Ausente</span>`;
-    else                      estadoHtml=`<span class="status status-none"><span class="status-dot"></span>Sin registro</span>`;
-
+  const tb=gel('att-tbody');
+  tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px"><div class="loader" style="margin:auto"></div></td></tr>';
+  const {data:attData}=await sb.from('attendance').select('*').eq('meeting_id',mid);
+  const map={}; (attData||[]).forEach(a=>map[a.user_id]=a.present);
+  const non=users.filter(u=>u.role!=='admin');
+  if(!non.length){ tb.innerHTML='<tr><td colspan="4"><div class="empty"><p>No hay usuarios</p></div></td></tr>'; return; }
+  tb.innerHTML='';
+  non.forEach(u=>{
+    const p=map[u.id];
+    const sh=p===true?'<span class="status sp"><span class="sdot"></span>Presente</span>'
+      :p===false?'<span class="status sa"><span class="sdot"></span>Ausente</span>'
+      :'<span class="status sn"><span class="sdot"></span>Sin registro</span>';
     const tr=document.createElement('tr');
-    tr.id=`att-row-${u.id}`;
-    tr.innerHTML=`
-      <td><strong>${u.nombre} ${u.apellido}</strong></td>
-      <td style="color:var(--muted);font-size:.8rem">${u.email}</td>
-      <td id="att-status-${u.id}">${estadoHtml}</td>
-      <td>
-        <div class="att-toggle">
-          <button class="att-btn att-btn-present ${present===true?'active':''}" id="btn-p-${u.id}"
-            onclick="setAttendance('${meetingId}','${u.id}',true)">✓ Presente</button>
-          <button class="att-btn att-btn-absent ${present===false?'active':''}" id="btn-a-${u.id}"
-            onclick="setAttendance('${meetingId}','${u.id}',false)">✗ Ausente</button>
-        </div>
-      </td>`;
-    tbody.appendChild(tr);
+    tr.innerHTML='<td><strong>'+u.nombre+' '+u.apellido+'</strong></td>'
+      +'<td style="color:var(--muted);font-size:.8rem">'+u.email+'</td>'
+      +'<td id="as-'+u.id+'">'+sh+'</td>'
+      +'<td><div class="att-toggle">'
+      +'<button class="att-btn abp '+(p===true?'active':'')+'" id="bp-'+u.id+'" onclick="setAtt(\''+mid+'\',\''+u.id+'\',true)">✓ Presente</button>'
+      +'<button class="att-btn aba '+(p===false?'active':'')+'" id="ba-'+u.id+'" onclick="setAtt(\''+mid+'\',\''+u.id+'\',false)">✗ Ausente</button>'
+      +'</div></td>';
+    tb.appendChild(tr);
   });
-};
+}
 
-window.setAttendance = async (meetingId, userId, present) => {
-  const {error}=await sb.from('attendance').upsert(
-    {meeting_id:meetingId, user_id:userId, present, updated_at:new Date().toISOString()},
-    {onConflict:'meeting_id,user_id'}
-  );
+async function setAtt(mid,uid,present){
+  const {error}=await sb.from('attendance').upsert({meeting_id:mid,user_id:uid,present,updated_at:new Date().toISOString()},{onConflict:'meeting_id,user_id'});
   if(error){ toast('Error al guardar','error'); return; }
-
-  // Update estado column
-  const statusCell=$(`att-status-${userId}`);
-  if(present) statusCell.innerHTML=`<span class="status status-present"><span class="status-dot"></span>Presente</span>`;
-  else        statusCell.innerHTML=`<span class="status status-absent"><span class="status-dot"></span>Ausente</span>`;
-
-  // Update button active states
-  $(`btn-p-${userId}`).classList.toggle('active', present===true);
-  $(`btn-a-${userId}`).classList.toggle('active', present===false);
-
+  gel('as-'+uid).innerHTML=present
+    ?'<span class="status sp"><span class="sdot"></span>Presente</span>'
+    :'<span class="status sa"><span class="sdot"></span>Ausente</span>';
+  gel('bp-'+uid).classList.toggle('active',present===true);
+  gel('ba-'+uid).classList.toggle('active',present===false);
   toast(present?'Marcado Presente ✓':'Marcado Ausente','success');
-};
+}
 
 // Close modals on overlay click
-$('modal-meeting').addEventListener('click', e=>{ if(e.target===$('modal-meeting')) closeMeetingModal(); });
-$('modal-camera').addEventListener('click',  e=>{ if(e.target===$('modal-camera'))  closeCameraModal();  });
+gel('modal-meeting').addEventListener('click',e=>{ if(e.target===gel('modal-meeting')) closeMeetingModal(); });
+gel('modal-camera').addEventListener('click',e=>{ if(e.target===gel('modal-camera')) closeCam(); });
+gel('modal-confirm').addEventListener('click',e=>{ if(e.target===gel('modal-confirm')) confirmPhoto(false); });
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done: $?"
