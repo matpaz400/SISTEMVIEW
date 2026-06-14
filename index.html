@@ -161,7 +161,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V8</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V9</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -180,7 +180,7 @@ canvas#cam-canvas{display:none}
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V8</h1>
+        <h1>SISTEMVIS_V9</h1>
         <p>Control de Asistencia · Visión Artificial</p>
       </div>
       <div class="auth-tabs">
@@ -361,52 +361,72 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 const VISION_KEY = 'AIzaSyAPssLCYRMqgCZDA9c2fkcalDfU52rNxwM';
 
 async function verifyFace(dataURL){
+  // Compress image to max 800px to reduce payload size
+  const compressed = await compressImage(dataURL, 800);
+  const base64 = compressed.split(',')[1];
+
+  let faces = [];
   try{
-    // Strip base64 header
-    const base64 = dataURL.split(',')[1];
-
-    const body = {
-      requests:[{
-        image:{ content: base64 },
-        features:[{ type:'FACE_DETECTION', maxResults:10 }]
-      }]
-    };
-
     const res = await fetch(
       `https://vision.googleapis.com/v1/images:annotate?key=${VISION_KEY}`,
-      { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) }
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          requests:[{
+            image:{ content: base64 },
+            features:[{ type:'FACE_DETECTION', maxResults:10 }]
+          }]
+        })
+      }
     );
-
+    const json = await res.json();
     if(!res.ok){
-      const err = await res.json();
-      console.warn('Vision API error:', err);
-      return true; // on API error allow
-    }
-
-    const data = await res.json();
-    const faces = data.responses?.[0]?.faceAnnotations || [];
-
-    if(faces.length === 0){
-      toast('❌ No se detectó ningún rostro. Asegúrate que tu cara esté bien visible e iluminada.','error');
+      // API error - mostrar el error real
+      const msg = json.error?.message || 'Error de API';
+      toast('⚠️ Error Vision API: ' + msg, 'error');
       return false;
     }
-    if(faces.length > 1){
-      toast(`❌ Se detectaron ${faces.length} rostros. La foto debe ser solo de una persona.`,'error');
-      return false;
-    }
-
-    // Check detection confidence
-    const confidence = faces[0].detectionConfidence || 0;
-    if(confidence < 0.5){
-      toast('❌ Rostro no reconocido con claridad. Intenta con mejor iluminación.','error');
-      return false;
-    }
-
-    return true;
+    faces = json.responses?.[0]?.faceAnnotations || [];
   }catch(e){
-    console.warn('verifyFace error:', e);
-    return true; // on network error allow
+    toast('⚠️ Sin conexión para verificar. Intenta de nuevo.','error');
+    return false;
   }
+
+  if(faces.length === 0){
+    toast('❌ No se detectó ningún rostro humano. Usa una foto clara de tu cara.','error');
+    return false;
+  }
+  if(faces.length > 1){
+    toast(`❌ Se detectaron ${faces.length} personas. Solo debe aparecer una cara.`,'error');
+    return false;
+  }
+  const conf = faces[0].detectionConfidence || 0;
+  if(conf < 0.4){
+    toast('❌ Cara poco visible. Mejora la iluminación o acércate más.','error');
+    return false;
+  }
+  return true;
+}
+
+// Compress image to maxSize px maintaining aspect ratio
+function compressImage(dataURL, maxSize){
+  return new Promise(resolve=>{
+    const img = new Image();
+    img.onload = ()=>{
+      let w = img.width, h = img.height;
+      if(w > maxSize || h > maxSize){
+        if(w > h){ h = Math.round(h*maxSize/w); w = maxSize; }
+        else { w = Math.round(w*maxSize/h); h = maxSize; }
+      }
+      const c = document.createElement('canvas');
+      c.width=w; c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = ()=> resolve(dataURL);
+    img.src = dataURL;
+  });
 }
 
 // ══ STATE ══
