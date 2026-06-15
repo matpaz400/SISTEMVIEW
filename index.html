@@ -1,70 +1,60 @@
-cat > /mnt/user-data/outputs/asistencia-vision-artificial.html << 'HTMLEOF'
-<!DOCTYPE html>
+html = """<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SistemaVis V13</title>
+<title>SistemaVis V5</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 :root{--bg:#050c14;--card:#0d1e30;--accent:#00e5ff;--accent2:#00ff88;--accent3:#ff4d6d;--text:#c8dff0;--muted:#4a6880;--border:rgba(0,229,255,0.13);--radius:14px}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 .page{display:none;position:relative;z-index:1;min-height:100vh}
 .page.active{display:flex;flex-direction:column}
-/* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(5,12,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.nav-logo{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;cursor:pointer}
+.nav-logo{font-family:'Share Tech Mono',monospace;font-size:1rem;color:var(--accent);letter-spacing:2px;text-shadow:0 0 20px rgba(0,229,255,0.3);cursor:pointer}
 .nav-right{display:flex;gap:12px;align-items:center}
 .nav-user{font-size:.8rem;color:var(--muted);font-family:'Share Tech Mono',monospace}
-.nav-badge{padding:3px 10px;border-radius:100px;font-size:.65rem;font-family:'Share Tech Mono',monospace;letter-spacing:1px;background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.3)}
+.nav-badge{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.3);padding:3px 10px;border-radius:100px;font-size:.65rem;font-family:'Share Tech Mono',monospace;letter-spacing:1px}
 .nav-badge.admin{background:rgba(255,77,109,.12);color:var(--accent3);border-color:rgba(255,77,109,.3)}
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s}
-.btn-primary{background:var(--accent);color:var(--bg)}.btn-primary:hover{background:#33ecff;box-shadow:0 0 28px rgba(0,229,255,.4);transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}.btn-ghost:hover{background:rgba(0,229,255,.06)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-decoration:none;letter-spacing:.3px}
+.btn-primary{background:var(--accent);color:var(--bg)}.btn-primary:hover{background:#33ecff;box-shadow:0 0 28px rgba(0,229,255,.45);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--border)}.btn-ghost:hover{background:rgba(0,229,255,.06);border-color:var(--accent)}
 .btn-danger{background:rgba(255,77,109,.15);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}.btn-danger:hover{background:rgba(255,77,109,.25)}
 .btn-sm{padding:7px 16px;font-size:.78rem}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
-/* FORMS */
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
 label{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
 input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:12px 16px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;transition:border-color .2s;outline:none;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,255,.1)}
 input::placeholder{color:var(--muted)}
 select option{background:var(--card)}
-/* CARD */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
-/* AUTH */
 #page-auth{align-items:center;justify-content:center}
-.auth-wrap{width:100%;max-width:520px;margin:auto;padding:40px 24px}
+.auth-wrap{width:100%;max-width:480px;margin:auto;padding:40px 24px}
 .auth-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden}
 .auth-logo{text-align:center;margin-bottom:32px}
-.auth-logo h1{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--accent);letter-spacing:3px}
+.auth-logo h1{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--accent);text-shadow:0 0 20px rgba(0,229,255,0.3);letter-spacing:3px}
 .auth-logo p{font-size:.8rem;color:var(--muted);margin-top:6px}
 .auth-tabs{display:flex;margin-bottom:28px;background:rgba(255,255,255,.03);border-radius:10px;padding:4px}
 .auth-tab{flex:1;padding:9px;text-align:center;font-size:.82rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all .2s;color:var(--muted)}
 .auth-tab.active{background:var(--accent);color:var(--bg)}
-/* PHOTOS */
 .photos-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:8px}
 .photo-slot{aspect-ratio:1;border:1.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;overflow:hidden;position:relative;background:rgba(255,255,255,.02)}
 .photo-slot:hover{border-color:var(--accent);background:rgba(0,229,255,.04)}
 .photo-slot.filled{border-style:solid;border-color:rgba(0,255,136,.4)}
 .photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
-.photo-slot .snum{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:3px}
-.photo-slot .sico{font-size:1rem}
-.photo-slot .rdel{position:absolute;top:3px;right:3px;background:rgba(255,77,109,.85);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:.6rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10}
-.photo-slot.filled:hover .rdel{display:flex}
-/* DASHBOARD */
+.photo-slot .slot-num{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:3px}
+.photo-slot .slot-icon{font-size:1rem}
+.photo-slot .remove-photo{position:absolute;top:3px;right:3px;background:rgba(255,77,109,.85);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:.6rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:10}
+.photo-slot.filled:hover .remove-photo{display:flex}
 #page-dashboard,#page-admin{padding-top:70px}
 .dash-inner{max-width:1150px;margin:0 auto;padding:40px 32px}
 .dash-header{margin-bottom:36px}
 .dash-header h2{font-size:1.8rem;font-weight:800}
 .dash-header p{color:var(--muted);font-size:.9rem;margin-top:4px}
-.mono{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--accent)}
-.mb-4{margin-bottom:16px}.mt-4{margin-top:16px}.w-full{width:100%}
-/* TABLE */
+.dash-mono{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:3px;margin-bottom:6px}
 .table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:.85rem}
 thead th{background:rgba(0,229,255,.06);padding:13px 18px;text-align:left;font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);border-bottom:1px solid var(--border)}
@@ -72,67 +62,62 @@ tbody tr{border-bottom:1px solid rgba(0,229,255,.05);transition:background .15s}
 tbody tr:hover{background:rgba(0,229,255,.03)}
 tbody tr:last-child{border-bottom:none}
 tbody td{padding:13px 18px;vertical-align:middle}
-/* STATUS */
-.status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:700}
-.sp{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.25)}
-.sa{background:rgba(255,77,109,.12);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}
-.sn{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
-.sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sp .sdot{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
-.sa .sdot{background:var(--accent3)}
-.sn .sdot{background:var(--muted)}
-/* ATTENDANCE */
+.status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:100px;font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.status-present{background:rgba(0,255,136,.12);color:var(--accent2);border:1px solid rgba(0,255,136,.25)}
+.status-absent{background:rgba(255,77,109,.12);color:var(--accent3);border:1px solid rgba(255,77,109,.25)}
+.status-none{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+.status-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.status-present .status-dot{background:var(--accent2);box-shadow:0 0 6px var(--accent2)}
+.status-absent .status-dot{background:var(--accent3)}
+.status-none .status-dot{background:var(--muted)}
 .att-toggle{display:flex;gap:6px}
 .att-btn{padding:5px 12px;border-radius:100px;font-size:.72rem;font-weight:700;cursor:pointer;border:1px solid transparent;transition:all .2s}
-.abp{background:rgba(0,255,136,.08);color:var(--accent2);border-color:rgba(0,255,136,.2)}
-.abp:hover,.abp.active{background:rgba(0,255,136,.22);border-color:var(--accent2)}
-.aba{background:rgba(255,77,109,.08);color:var(--accent3);border-color:rgba(255,77,109,.2)}
-.aba:hover,.aba.active{background:rgba(255,77,109,.22);border-color:var(--accent3)}
-/* MODAL */
+.att-btn-present{background:rgba(0,255,136,.08);color:var(--accent2);border-color:rgba(0,255,136,.2)}
+.att-btn-present:hover,.att-btn-present.active{background:rgba(0,255,136,.22);border-color:var(--accent2)}
+.att-btn-absent{background:rgba(255,77,109,.08);color:var(--accent3);border-color:rgba(255,77,109,.2)}
+.att-btn-absent:hover,.att-btn-absent.active{background:rgba(255,77,109,.22);border-color:var(--accent3)}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:24px}
 .modal-overlay.open{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:480px;position:relative;animation:mIn .2s ease}
-@keyframes mIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;width:100%;max-width:480px;position:relative;animation:modalIn .2s ease}
+.cam-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:420px;position:relative;animation:modalIn .2s ease}
+@keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.06);border:none;color:var(--muted);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
 .modal-close:hover{background:rgba(255,77,109,.2);color:var(--accent3)}
 .modal h3{font-size:1.1rem;font-weight:800;margin-bottom:20px}
-/* CAMERA */
-.cam-modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:420px;position:relative;animation:mIn .2s ease}
 .cam-tabs{display:flex;margin-bottom:20px;background:rgba(255,255,255,.03);border-radius:10px;padding:4px}
 .cam-tab{flex:1;padding:8px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;border-radius:7px;transition:all .2s;color:var(--muted)}
 .cam-tab.active{background:var(--accent);color:var(--bg)}
 .video-wrap{position:relative;width:100%;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;margin-bottom:16px}
 #cam-video{width:100%;height:100%;object-fit:cover;display:block}
-.scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 10px var(--accent);animation:scan 2s ease-in-out infinite;pointer-events:none}
-@keyframes scan{0%{top:10%}50%{top:85%}100%{top:10%}}
-.corners span{position:absolute;width:22px;height:22px;border-color:var(--accent);border-style:solid}
-.corners span:nth-child(1){top:10px;left:10px;border-width:2px 0 0 2px}
-.corners span:nth-child(2){top:10px;right:10px;border-width:2px 2px 0 0}
-.corners span:nth-child(3){bottom:10px;left:10px;border-width:0 0 2px 2px}
-.corners span:nth-child(4){bottom:10px;right:10px;border-width:0 2px 2px 0}
+.scan-line-cam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);box-shadow:0 0 10px var(--accent);animation:scanMove 2s ease-in-out infinite;pointer-events:none}
+@keyframes scanMove{0%{top:10%}50%{top:85%}100%{top:10%}}
+.cam-corners span{position:absolute;width:22px;height:22px;border-color:var(--accent);border-style:solid}
+.cam-corners span:nth-child(1){top:10px;left:10px;border-width:2px 0 0 2px}
+.cam-corners span:nth-child(2){top:10px;right:10px;border-width:2px 2px 0 0}
+.cam-corners span:nth-child(3){bottom:10px;left:10px;border-width:0 0 2px 2px}
+.cam-corners span:nth-child(4){bottom:10px;right:10px;border-width:0 2px 2px 0}
 .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
 .upload-zone:hover{border-color:var(--accent);background:rgba(0,229,255,.04)}
 canvas#cam-canvas{display:none}
-/* MISC */
-.divider{height:1px;background:var(--border);margin:40px 0}
-.empty{text-align:center;padding:50px 20px;color:var(--muted)}
-.empty .ei{font-size:2.5rem;margin-bottom:10px;opacity:.4}
+.section-divider{height:1px;background:var(--border);margin:40px 0}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted)}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:10px;opacity:.4}
+.mono{font-family:'Share Tech Mono',monospace;font-size:.75rem;color:var(--accent)}
 .flex{display:flex}.gap-2{gap:8px}.items-center{align-items:center}.justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}
+.mt-4{margin-top:16px}.mb-4{margin-bottom:16px}.w-full{width:100%}
 .chip{display:inline-block;padding:3px 10px;border-radius:100px;font-size:.7rem;background:rgba(0,229,255,.08);color:var(--accent);border:1px solid var(--border);font-family:'Share Tech Mono',monospace}
 .chip.admin{background:rgba(255,77,109,.1);color:var(--accent3);border-color:rgba(255,77,109,.3)}
 .user-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(0,229,255,.06)}
 .user-row:last-child{border-bottom:none}
-.uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden}
-.uav img{width:100%;height:100%;object-fit:cover}
-.uinfo{flex:1}.uinfo .name{font-weight:700;font-size:.9rem}.uinfo .email{font-size:.75rem;color:var(--muted)}
-/* TOAST */
+.user-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-info{flex:1}.user-info .name{font-weight:700;font-size:.9rem}.user-info .email{font-size:.75rem;color:var(--muted)}
 #toast{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-.ti{padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:600;animation:tIn .3s ease;display:flex;align-items:center;gap:10px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto}
-.ti.success{background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--accent2)}
-.ti.error{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:var(--accent3)}
-.ti.info{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);color:var(--accent)}
-@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-/* LOADER */
+.toast-item{padding:12px 20px;border-radius:10px;font-size:.85rem;font-weight:600;animation:toastIn .3s ease;display:flex;align-items:center;gap:10px;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:auto}
+.toast-item.success{background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--accent2)}
+.toast-item.error{background:rgba(255,77,109,.15);border:1px solid rgba(255,77,109,.3);color:var(--accent3)}
+.toast-item.info{background:rgba(0,229,255,.12);border:1px solid rgba(0,229,255,.25);color:var(--accent)}
+@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 .loader{display:inline-block;width:18px;height:18px;border:2px solid rgba(0,229,255,.2);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-overlay{position:fixed;inset:0;background:rgba(5,12,20,.88);z-index:900;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
@@ -144,7 +129,7 @@ canvas#cam-canvas{display:none}
 <body>
 
 <nav id="main-nav" style="display:none">
-  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V13</div>
+  <div class="nav-logo" onclick="goHome()">SISTEMVIS_V5</div>
   <div class="nav-right">
     <span class="nav-user" id="nav-username"></span>
     <span class="nav-badge" id="nav-role-badge"></span>
@@ -158,30 +143,29 @@ canvas#cam-canvas{display:none}
 </div>
 <div id="toast"></div>
 
-<!-- AUTH -->
 <div class="page active" id="page-auth">
   <div class="auth-wrap">
     <div class="auth-box">
       <div class="auth-logo">
-        <h1>SISTEMVIS_V13</h1>
-        <p>Control de Asistencia · Visión Artificial</p>
+        <h1>SISTEMVIS_V5</h1>
+        <p>Control de Asistencia - Vision Artificial</p>
       </div>
       <div class="auth-tabs">
-        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar Sesión</div>
+        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Iniciar Sesion</div>
         <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Registrarse</div>
       </div>
       <div id="form-login">
-        <div class="form-group"><label>Correo electrónico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com"/></div>
-        <div class="form-group"><label>Contraseña</label><input type="password" id="login-password" placeholder="••••••••"/></div>
-        <button class="btn btn-primary w-full mt-4" onclick="doLogin()">Iniciar Sesión</button>
+        <div class="form-group"><label>Correo electronico</label><input type="email" id="login-email" placeholder="correo@ejemplo.com"/></div>
+        <div class="form-group"><label>Contrasena</label><input type="password" id="login-password" placeholder=""/></div>
+        <button class="btn btn-primary w-full mt-4" onclick="doLogin()">Iniciar Sesion</button>
       </div>
       <div id="form-register" style="display:none">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
           <div class="form-group" style="margin-bottom:0"><label>Nombre</label><input type="text" id="reg-nombre" placeholder="Juan"/></div>
-          <div class="form-group" style="margin-bottom:0"><label>Apellido</label><input type="text" id="reg-apellido" placeholder="Pérez"/></div>
+          <div class="form-group" style="margin-bottom:0"><label>Apellido</label><input type="text" id="reg-apellido" placeholder="Perez"/></div>
         </div>
-        <div class="form-group mt-4"><label>Correo electrónico</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com"/></div>
-        <div class="form-group"><label>Contraseña</label><input type="password" id="reg-password" placeholder="Mínimo 6 caracteres"/></div>
+        <div class="form-group mt-4"><label>Correo electronico</label><input type="email" id="reg-email" placeholder="correo@ejemplo.com"/></div>
+        <div class="form-group"><label>Contrasena</label><input type="password" id="reg-password" placeholder="Minimo 6 caracteres"/></div>
         <div class="form-group">
           <label>10 Fotos de perfil <span style="color:var(--accent3)">*</span></label>
           <div class="photos-grid" id="photos-grid"></div>
@@ -193,64 +177,62 @@ canvas#cam-canvas{display:none}
   </div>
 </div>
 
-<!-- DASHBOARD USUARIO -->
 <div class="page" id="page-dashboard">
   <div class="dash-inner">
     <div class="dash-header">
-      <div class="mono mb-4">// PANEL DE USUARIO</div>
+      <div class="dash-mono">// PANEL DE USUARIO</div>
       <h2 id="dash-welcome">Bienvenido</h2>
-      <p style="color:var(--muted);font-size:.9rem;margin-top:4px">Historial de reuniones y tu asistencia</p>
+      <p class="text-muted" style="color:var(--muted);font-size:.9rem;margin-top:4px">Historial de reuniones y tu asistencia</p>
     </div>
     <div class="card">
       <div class="mono mb-4">REUNIONES</div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Asistencia</th></tr></thead>
-          <tbody id="user-tbody"><tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr></tbody>
+          <tbody id="user-meetings-tbody"><tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#128197;</div><p>No hay reuniones</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ADMIN -->
 <div class="page" id="page-admin">
   <div class="dash-inner">
     <div class="dash-header">
-      <div class="mono mb-4">// PANEL ADMINISTRADOR</div>
-      <h2>Panel de Administración</h2>
-      <p style="color:var(--muted);font-size:.9rem;margin-top:4px">Gestión de reuniones, usuarios y asistencia</p>
+      <div class="dash-mono">// PANEL ADMINISTRADOR</div>
+      <h2>Panel de Administracion</h2>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:4px">Gestion de reuniones, usuarios y asistencia</p>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:32px" id="admin-stats"></div>
     <div class="card">
       <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-        <div><div class="mono">REUNIONES</div></div>
-        <button class="btn btn-primary btn-sm" onclick="openMeetingModal()">+ Nueva Reunión</button>
+        <div class="mono">REUNIONES</div>
+        <button class="btn btn-primary btn-sm" onclick="openMeetingModal()">+ Nueva Reunion</button>
       </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Fecha</th><th>Hora inicio</th><th>Hora fin</th><th>Motivo</th><th>Acciones</th></tr></thead>
-          <tbody id="admin-meetings-tbody"><tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr></tbody>
+          <tbody id="admin-meetings-tbody"><tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#128197;</div><p>No hay reuniones</p></div></td></tr></tbody>
         </table>
       </div>
     </div>
-    <div class="divider"></div>
+    <div class="section-divider"></div>
     <div class="card">
       <div class="mono mb-4">USUARIOS REGISTRADOS</div>
-      <div id="admin-users-list"><div class="empty"><div class="ei">👥</div><p>Cargando...</p></div></div>
+      <div id="admin-users-list"><div class="empty-state"><div class="empty-icon">&#128101;</div><p>Cargando...</p></div></div>
     </div>
-    <div class="divider"></div>
+    <div class="section-divider"></div>
     <div class="card">
       <div class="mono mb-4">REGISTRO DE ASISTENCIA</div>
       <div class="form-group" style="max-width:400px">
-        <label>Seleccionar Reunión</label>
-        <select id="att-select" onchange="loadAttendance()"><option value="">— Selecciona una reunión —</option></select>
+        <label>Seleccionar Reunion</label>
+        <select id="att-meeting-select" onchange="loadAttendance()"><option value="">Selecciona una reunion</option></select>
       </div>
-      <div id="att-panel" style="display:none">
+      <div id="attendance-panel" style="display:none">
         <div class="table-wrap">
           <table>
             <thead><tr><th>Usuario</th><th>Email</th><th>Estado</th><th>Cambiar</th></tr></thead>
-            <tbody id="att-tbody"></tbody>
+            <tbody id="attendance-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -258,65 +240,62 @@ canvas#cam-canvas{display:none}
   </div>
 </div>
 
-<!-- MODAL CÁMARA -->
 <div class="modal-overlay" id="modal-camera">
   <div class="cam-modal">
-    <button class="modal-close" onclick="closeCam()">✕</button>
-    <h3 style="margin-bottom:6px">Foto <span id="cam-slot-num">1</span> de 10</h3>
+    <button class="modal-close" onclick="closeCameraModal()">x</button>
+    <h3 style="margin-bottom:6px">Foto <span id="cam-slot-label">1</span> de 10</h3>
     <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px">Toma o sube la foto</p>
     <div class="cam-tabs">
-      <div class="cam-tab active" id="ctab-live" onclick="setCamTab('live')">📷 Tomar foto</div>
-      <div class="cam-tab" id="ctab-upload" onclick="setCamTab('upload')">📁 Subir archivo</div>
+      <div class="cam-tab active" id="cam-tab-live" onclick="switchCamTab('live')">Tomar foto</div>
+      <div class="cam-tab" id="cam-tab-upload" onclick="switchCamTab('upload')">Subir archivo</div>
     </div>
-    <div id="cpanel-live">
+    <div id="cam-panel-live">
       <div class="video-wrap">
         <video id="cam-video" autoplay playsinline muted></video>
-        <div class="scan-line"></div>
-        <div class="corners"><span></span><span></span><span></span><span></span></div>
+        <div class="scan-line-cam"></div>
+        <div class="cam-corners"><span></span><span></span><span></span><span></span></div>
       </div>
       <canvas id="cam-canvas"></canvas>
       <div class="flex gap-2">
-        <button class="btn btn-ghost btn-sm w-full" onclick="flipCam()">🔄 Girar</button>
-        <button class="btn btn-primary w-full" id="btn-capture" onclick="doCapture()">📸 Capturar</button>
+        <button class="btn btn-ghost btn-sm w-full" onclick="switchCamera()">Girar</button>
+        <button class="btn btn-primary w-full" onclick="capturePhoto()">Capturar</button>
       </div>
-      <p id="cam-err" style="font-size:.75rem;color:var(--accent3);margin-top:10px;display:none;text-align:center"></p>
+      <p id="cam-error" style="font-size:.75rem;color:var(--accent3);margin-top:10px;display:none;text-align:center"></p>
     </div>
-    <div id="cpanel-upload" style="display:none">
-      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-        <div style="font-size:2.2rem;margin-bottom:8px">🖼️</div>
+    <div id="cam-panel-upload" style="display:none">
+      <div class="upload-zone" onclick="document.getElementById('photo-file-input').click()">
+        <div style="font-size:2.2rem;margin-bottom:8px">&#128444;</div>
         <p style="font-size:.85rem;color:var(--muted)">Clic para seleccionar imagen</p>
-        <p style="font-size:.72rem;color:var(--muted);margin-top:4px">JPG, PNG, WEBP — máx. 10 MB</p>
+        <p style="font-size:.72rem;color:var(--muted);margin-top:4px">JPG PNG WEBP max 10MB</p>
       </div>
-      <input type="file" id="file-input" accept="image/*" style="display:none" onchange="doUpload(event)"/>
+      <input type="file" id="photo-file-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)"/>
     </div>
   </div>
 </div>
 
-<!-- MODAL CONFIRMAR FOTO -->
 <div class="modal-overlay" id="modal-confirm">
   <div class="cam-modal" style="text-align:center">
-    <h3 style="margin-bottom:12px">¿Usar esta foto?</h3>
+    <h3 style="margin-bottom:12px">Usar esta foto?</h3>
     <img id="confirm-img" style="width:100%;border-radius:12px;margin-bottom:16px;max-height:280px;object-fit:cover"/>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">¿La foto muestra claramente <strong style="color:var(--text)">tu rostro</strong>?</p>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">La foto muestra claramente tu rostro?</p>
     <div class="flex gap-2">
-      <button onclick="confirmPhoto(false)" class="btn btn-danger w-full">✗ No, repetir</button>
-      <button onclick="confirmPhoto(true)" class="btn btn-primary w-full">✓ Sí, usar</button>
+      <button onclick="confirmPhoto(false)" class="btn btn-danger w-full">No, repetir</button>
+      <button onclick="confirmPhoto(true)" class="btn btn-primary w-full">Si, usar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL REUNIÓN -->
 <div class="modal-overlay" id="modal-meeting">
   <div class="modal">
-    <button class="modal-close" onclick="closeMeetingModal()">✕</button>
-    <h3 id="meeting-modal-title">Nueva Reunión</h3>
+    <button class="modal-close" onclick="closeMeetingModal()">x</button>
+    <h3 id="modal-meeting-title">Nueva Reunion</h3>
     <input type="hidden" id="meeting-edit-id"/>
     <div class="form-group"><label>Fecha</label><input type="date" id="meeting-fecha"/></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <div class="form-group" style="margin-bottom:0"><label>Hora inicio</label><input type="time" id="meeting-hora"/></div>
       <div class="form-group" style="margin-bottom:0"><label>Hora fin</label><input type="time" id="meeting-hora-fin"/></div>
     </div>
-    <div class="form-group mt-4"><label>Motivo</label><textarea id="meeting-motivo" rows="3" placeholder="Descripción..."></textarea></div>
+    <div class="form-group mt-4"><label>Motivo</label><textarea id="meeting-motivo" rows="3" placeholder="Descripcion..."></textarea></div>
     <div class="flex gap-2 mt-4">
       <button class="btn btn-ghost w-full" onclick="closeMeetingModal()">Cancelar</button>
       <button class="btn btn-primary w-full" id="btn-save-meeting" onclick="saveMeeting()">Guardar</button>
@@ -326,453 +305,458 @@ canvas#cam-canvas{display:none}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ════════════════════════════════
-//  CONFIG
-// ════════════════════════════════
-const SUPABASE_URL  = 'https://jvqdohmytnzfvjcthxgr.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2cWRvaG15dG56ZnZqY3RoeGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzkwNDUsImV4cCI6MjA5NTMxNTA0NX0.wwp2sDmaFf_1dPBdNqTx2slbAbFGbOMyQihSF7yd7z8';
-const ADMIN_EMAIL   = 'admin@sistemvis.com';
-const TOTAL_PHOTOS  = 10;
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+var SUPABASE_URL  = 'https://jvqdohmytnzfvjcthxgr.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2cWRvaG15dG56ZnZqY3RoeGdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzkwNDUsImV4cCI6MjA5NTMxNTA0NX0.wwp2sDmaFf_1dPBdNqTx2slbAbFGbOMyQihSF7yd7z8';
+var ADMIN_EMAIL   = 'admin@sistemvis.com';
+var TOTAL_PHOTOS  = 10;
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// ════════════════════════════════
-//  STATE
-// ════════════════════════════════
-let me         = null;   // auth user
-let profile    = null;   // users row
-let slots      = Array(TOTAL_PHOTOS).fill(null);
-let curSlot    = -1;
-let camStream  = null;
-let facing     = 'user';
-let meetings   = [];
-let users      = [];
-let pending    = null;   // dataURL waiting confirm
-let loaded     = false;  // prevent double-load
+var currentUser    = null;
+var currentProfile = null;
+var photoSlots     = [];
+var currentSlot    = -1;
+var cameraStream   = null;
+var facingMode     = 'user';
+var allMeetings    = [];
+var allUsers       = [];
+var pendingPhoto   = null;
+var _done          = false;
 
-// ════════════════════════════════
-//  UTILS
-// ════════════════════════════════
-function gel(id){ return document.getElementById(id); }
-function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); gel('page-'+id).classList.add('active'); }
-function showLoad(t){ gel('loading-overlay').classList.add('show'); gel('loading-text').textContent = t||'CARGANDO...'; }
-function hideLoad(){ gel('loading-overlay').classList.remove('show'); }
-function fdate(d){ if(!d)return'—'; const[y,m,day]=d.split('-'); return day+'/'+m+'/'+y; }
-function ftime(t){ return t ? t.substring(0,5) : '—'; }
-function toast(msg, type){
-  const d=document.createElement('div');
-  d.className='ti '+(type||'info');
-  d.innerHTML='<span>'+(type==='success'?'✓':type==='error'?'✗':'ℹ')+'</span><span>'+msg+'</span>';
-  gel('toast').appendChild(d);
-  setTimeout(()=>d.remove(),4200);
+for (var i = 0; i < TOTAL_PHOTOS; i++) photoSlots.push(null);
+
+function gel(id) { return document.getElementById(id); }
+
+function showPage(id) {
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  gel('page-' + id).classList.add('active');
 }
 
-// ════════════════════════════════
-//  NAV
-// ════════════════════════════════
-function goHome(){ if(profile) profile.role==='admin' ? showPage('admin') : showPage('dashboard'); }
-function doLogout(){ loaded=false; sb.auth.signOut(); }
-
-// ════════════════════════════════
-//  AUTH TABS
-// ════════════════════════════════
-function switchTab(tab){
-  gel('tab-login').classList.toggle('active', tab==='login');
-  gel('tab-register').classList.toggle('active', tab==='register');
-  gel('form-login').style.display    = tab==='login'    ? 'block' : 'none';
-  gel('form-register').style.display = tab==='register' ? 'block' : 'none';
-  if(tab==='register') renderSlots();
+function showLoading(t) {
+  gel('loading-overlay').classList.add('show');
+  gel('loading-text').textContent = t || 'CARGANDO...';
 }
 
-// ════════════════════════════════
-//  PHOTO SLOTS
-// ════════════════════════════════
-function renderSlots(){
-  const g = gel('photos-grid');
-  if(!g) return;
-  g.innerHTML = '';
-  for(let i=0;i<TOTAL_PHOTOS;i++){
-    const s = document.createElement('div');
-    s.className = 'photo-slot' + (slots[i]?' filled':'');
-    if(slots[i]){
-      s.innerHTML = '<img src="'+slots[i]+'" alt="foto '+(i+1)+'"/><button class="rdel" onclick="delSlot('+i+',event)">✕</button>';
+function hideLoading() { gel('loading-overlay').classList.remove('show'); }
+
+function formatDate(d) {
+  if (!d) return '--';
+  var p = d.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function formatTime(t) { return t ? t.substring(0, 5) : '--'; }
+
+function toast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast-item ' + (type || 'info');
+  el.innerHTML = '<span>' + (type === 'success' ? 'OK' : type === 'error' ? 'X' : 'i') + '</span><span>' + msg + '</span>';
+  gel('toast').appendChild(el);
+  setTimeout(function() { el.remove(); }, 4200);
+}
+
+function goHome() {
+  if (currentProfile) {
+    if (currentProfile.role === 'admin') showPage('admin');
+    else showPage('dashboard');
+  }
+}
+
+function doLogout() {
+  _done = false;
+  sb.auth.signOut();
+}
+
+function switchTab(tab) {
+  gel('tab-login').classList.toggle('active', tab === 'login');
+  gel('tab-register').classList.toggle('active', tab === 'register');
+  gel('form-login').style.display = tab === 'login' ? 'block' : 'none';
+  gel('form-register').style.display = tab === 'register' ? 'block' : 'none';
+  if (tab === 'register') renderPhotoSlots();
+}
+
+function renderPhotoSlots() {
+  var grid = gel('photos-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  for (var i = 0; i < TOTAL_PHOTOS; i++) {
+    var slot = document.createElement('div');
+    slot.className = 'photo-slot' + (photoSlots[i] ? ' filled' : '');
+    if (photoSlots[i]) {
+      slot.innerHTML = '<img src="' + photoSlots[i] + '" alt="foto ' + (i+1) + '"/><button class="remove-photo" data-i="' + i + '">x</button>';
+      slot.querySelector('.remove-photo').addEventListener('click', (function(idx) {
+        return function(e) { e.stopPropagation(); photoSlots[idx] = null; renderPhotoSlots(); };
+      })(i));
     } else {
-      s.innerHTML = '<span class="sico">📷</span><span class="snum">'+(i+1)+'</span>';
-      s.onclick = function(){ openCam(i); };
+      slot.innerHTML = '<span class="slot-icon">&#128247;</span><span class="slot-num">' + (i+1) + '</span>';
+      slot.addEventListener('click', (function(idx) {
+        return function() { openCameraModal(idx); };
+      })(i));
     }
-    g.appendChild(s);
+    grid.appendChild(slot);
   }
 }
 
-function delSlot(i, e){ e.stopPropagation(); slots[i]=null; renderSlots(); }
-
-// ════════════════════════════════
-//  CAMERA
-// ════════════════════════════════
-async function openCam(idx){
-  curSlot = idx;
-  gel('cam-slot-num').textContent = idx+1;
-  gel('cam-err').style.display = 'none';
+function openCameraModal(idx) {
+  currentSlot = idx;
+  gel('cam-slot-label').textContent = idx + 1;
+  gel('cam-error').style.display = 'none';
   gel('modal-camera').classList.add('open');
-  await setCamTab('live');
+  switchCamTab('live');
 }
 
-function closeCam(){
-  gel('modal-camera').classList.remove('open');
+function closeCameraModal() { gel('modal-camera').classList.remove('open'); }
+
+function switchCamTab(tab) {
+  gel('cam-tab-live').classList.toggle('active', tab === 'live');
+  gel('cam-tab-upload').classList.toggle('active', tab === 'upload');
+  gel('cam-panel-live').style.display = tab === 'live' ? 'block' : 'none';
+  gel('cam-panel-upload').style.display = tab === 'upload' ? 'block' : 'none';
+  if (tab === 'live') startCamera();
 }
 
-async function setCamTab(tab){
-  gel('ctab-live').classList.toggle('active', tab==='live');
-  gel('ctab-upload').classList.toggle('active', tab==='upload');
-  gel('cpanel-live').style.display   = tab==='live'   ? 'block':'none';
-  gel('cpanel-upload').style.display = tab==='upload' ? 'block':'none';
-  if(tab==='live') await startCam();
+function startCamera() {
+  if (cameraStream) { gel('cam-video').srcObject = cameraStream; return; }
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode, width: { ideal: 640 }, height: { ideal: 640 } }, audio: false })
+    .then(function(stream) {
+      cameraStream = stream;
+      gel('cam-video').srcObject = stream;
+      gel('cam-error').style.display = 'none';
+    })
+    .catch(function() {
+      gel('cam-error').style.display = 'block';
+      gel('cam-error').textContent = 'Sin acceso a camara. Usa Subir archivo.';
+    });
 }
 
-async function startCam(){
-  if(camStream){ gel('cam-video').srcObject = camStream; return; }
-  try{
-    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:640},height:{ideal:640}},audio:false});
-    gel('cam-video').srcObject = camStream;
-    gel('cam-err').style.display = 'none';
-  }catch(e){
-    gel('cam-err').style.display='block';
-    gel('cam-err').textContent='Sin acceso a cámara. Usa "Subir archivo".';
-  }
+function switchCamera() {
+  facingMode = facingMode === 'user' ? 'environment' : 'user';
+  if (cameraStream) { cameraStream.getTracks().forEach(function(t) { t.stop(); }); cameraStream = null; }
+  startCamera();
 }
 
-async function flipCam(){
-  facing = facing==='user'?'environment':'user';
-  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
-  await startCam();
+function capturePhoto() {
+  var vid = gel('cam-video');
+  if (!vid.srcObject) { toast('Camara no disponible', 'error'); return; }
+  var c = gel('cam-canvas');
+  c.width = vid.videoWidth || 640; c.height = vid.videoHeight || 640;
+  var ctx = c.getContext('2d');
+  if (facingMode === 'user') { ctx.translate(c.width, 0); ctx.scale(-1, 1); }
+  ctx.drawImage(vid, 0, 0);
+  showPhotoConfirm(c.toDataURL('image/jpeg', 0.85));
 }
 
-function doCapture(){
-  const vid = gel('cam-video');
-  if(!vid.srcObject){ toast('Cámara no disponible','error'); return; }
-  const c = gel('cam-canvas');
-  c.width=vid.videoWidth||640; c.height=vid.videoHeight||640;
-  const ctx = c.getContext('2d');
-  if(facing==='user'){ ctx.translate(c.width,0); ctx.scale(-1,1); }
-  ctx.drawImage(vid,0,0);
-  showConfirm(c.toDataURL('image/jpeg',.85));
+function handlePhotoUpload(e) {
+  var file = e.target.files[0]; if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { toast('Imagen muy grande (max 10MB)', 'error'); return; }
+  var reader = new FileReader();
+  reader.onload = function(ev) { showPhotoConfirm(ev.target.result); };
+  reader.readAsDataURL(file);
+  e.target.value = '';
 }
 
-function doUpload(e){
-  const file = e.target.files[0]; if(!file) return;
-  if(file.size>10*1024*1024){ toast('Imagen muy grande (máx 10MB)','error'); return; }
-  const r = new FileReader();
-  r.onload = ev => showConfirm(ev.target.result);
-  r.readAsDataURL(file);
-  e.target.value='';
-}
-
-function showConfirm(dataURL){
-  pending = dataURL;
+function showPhotoConfirm(dataURL) {
+  pendingPhoto = dataURL;
   gel('confirm-img').src = dataURL;
   gel('modal-confirm').classList.add('open');
 }
 
-function confirmPhoto(yes){
+function confirmPhoto(yes) {
   gel('modal-confirm').classList.remove('open');
-  if(!yes){ pending=null; return; }
-  slots[curSlot] = pending;
-  pending = null;
-  renderSlots();
-  closeCam();
-  toast('Foto '+(curSlot+1)+' guardada ✓','success');
+  if (!yes) { pendingPhoto = null; return; }
+  photoSlots[currentSlot] = pendingPhoto;
+  pendingPhoto = null;
+  renderPhotoSlots();
+  closeCameraModal();
+  toast('Foto ' + (currentSlot + 1) + ' guardada', 'success');
 }
 
-// ════════════════════════════════
-//  REGISTER
-// ════════════════════════════════
-async function doRegister(){
-  const nombre   = gel('reg-nombre').value.trim();
-  const apellido = gel('reg-apellido').value.trim();
-  const email    = gel('reg-email').value.trim();
-  const password = gel('reg-password').value;
-  if(!nombre||!apellido||!email||!password){ toast('Completa todos los campos','error'); return; }
-  if(password.length<6){ toast('Contraseña mínimo 6 caracteres','error'); return; }
-  const filled = slots.filter(Boolean);
-  if(filled.length<TOTAL_PHOTOS){ toast('Faltan '+(TOTAL_PHOTOS-filled.length)+' fotos','error'); return; }
+function doRegister() {
+  var nombre   = gel('reg-nombre').value.trim();
+  var apellido = gel('reg-apellido').value.trim();
+  var email    = gel('reg-email').value.trim();
+  var password = gel('reg-password').value;
+  if (!nombre || !apellido || !email || !password) { toast('Completa todos los campos', 'error'); return; }
+  if (password.length < 6) { toast('Contrasena minimo 6 caracteres', 'error'); return; }
+  var filled = photoSlots.filter(function(s) { return s; });
+  if (filled.length < TOTAL_PHOTOS) { toast('Faltan ' + (TOTAL_PHOTOS - filled.length) + ' fotos', 'error'); return; }
 
-  showLoad('CREANDO CUENTA...');
-  try{
-    const {data:auth, error:aErr} = await sb.auth.signUp({email, password, options:{emailRedirectTo:null}});
-    if(aErr) throw aErr;
-    if(!auth.user) throw new Error('Desactiva "Confirm email" en Supabase → Auth → Providers → Email');
-    const uid  = auth.user.id;
-    const role = email===ADMIN_EMAIL ? 'admin' : 'user';
+  showLoading('CREANDO CUENTA...');
+  sb.auth.signUp({ email: email, password: password, options: { emailRedirectTo: null } }).then(function(res) {
+    if (res.error) { hideLoading(); toast(res.error.message, 'error'); return; }
+    if (!res.data.user) { hideLoading(); toast('Desactiva Confirm email en Supabase Auth', 'error'); return; }
+    var uid  = res.data.user.id;
+    var role = email === ADMIN_EMAIL ? 'admin' : 'user';
+    showLoading('GUARDANDO PERFIL...');
+    sb.from('users').insert({ id: uid, nombre: nombre, apellido: apellido, email: email, role: role, photo_urls: [] }).then(function(r2) {
+      if (r2.error) { hideLoading(); toast(r2.error.message, 'error'); return; }
+      var folder = (nombre + '_' + apellido).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+      var urls = []; var idx = 0;
+      function nextUpload() {
+        if (idx >= TOTAL_PHOTOS) {
+          sb.from('users').update({ photo_urls: urls }).eq('id', uid).then(function() {
+            hideLoading();
+            toast('Cuenta creada exitosamente!', 'success');
+            gel('reg-nombre').value = ''; gel('reg-apellido').value = '';
+            gel('reg-email').value = ''; gel('reg-password').value = '';
+            for (var j = 0; j < TOTAL_PHOTOS; j++) photoSlots[j] = null;
+            renderPhotoSlots();
+          });
+          return;
+        }
+        showLoading('SUBIENDO FOTO ' + (idx + 1) + '/' + TOTAL_PHOTOS + '...');
+        fetch(photoSlots[idx]).then(function(r) { return r.blob(); }).then(function(blob) {
+          var path = folder + '/photo_' + idx + '.jpg';
+          sb.storage.from('fotos').upload(path, blob, { contentType: 'image/jpeg', upsert: true }).then(function(ur) {
+            if (ur.error) { urls.push(photoSlots[idx]); }
+            else { urls.push(sb.storage.from('fotos').getPublicUrl(path).data.publicUrl); }
+            idx++; nextUpload();
+          });
+        });
+      }
+      nextUpload();
+    });
+  });
+}
 
-    showLoad('GUARDANDO PERFIL...');
-    const {error:dErr} = await sb.from('users').insert({id:uid,nombre,apellido,email,role,photo_urls:[]});
-    if(dErr) throw dErr;
+function doLogin() {
+  var email    = gel('login-email').value.trim();
+  var password = gel('login-password').value;
+  if (!email || !password) { toast('Ingresa correo y contrasena', 'error'); return; }
+  showLoading('AUTENTICANDO...');
+  sb.auth.signInWithPassword({ email: email, password: password }).then(function(res) {
+    if (res.error) { hideLoading(); toast(res.error.message, 'error'); }
+  });
+}
 
-    const folder = (nombre+'_'+apellido).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9_-]/g,'_');
-    const urls = [];
-    for(let i=0;i<TOTAL_PHOTOS;i++){
-      showLoad('SUBIENDO FOTO '+(i+1)+'/'+TOTAL_PHOTOS+'...');
-      try{
-        const blob = await (await fetch(slots[i])).blob();
-        const path = folder+'/photo_'+i+'.jpg';
-        const {error:uErr} = await sb.storage.from('fotos').upload(path, blob, {contentType:'image/jpeg',upsert:true});
-        if(uErr){ urls.push(slots[i]); continue; }
-        const {data:ud} = sb.storage.from('fotos').getPublicUrl(path);
-        urls.push(ud.publicUrl);
-      }catch(){ urls.push(slots[i]); }
+function loadDashboard(user) {
+  if (_done) return;
+  _done = true;
+  currentUser = user;
+  showLoading('CARGANDO PERFIL...');
+  sb.from('users').select('*').eq('id', user.id).maybeSingle().then(function(res) {
+    if (!res.data) {
+      _done = false; hideLoading();
+      sb.auth.signOut();
+      toast('Perfil no encontrado. Inicia sesion de nuevo.', 'info');
+      return;
     }
-    await sb.from('users').update({photo_urls:urls}).eq('id',uid);
-
-    toast('¡Cuenta creada! ✓','success');
-    gel('reg-nombre').value=''; gel('reg-apellido').value='';
-    gel('reg-email').value='';  gel('reg-password').value='';
-    slots = Array(TOTAL_PHOTOS).fill(null);
-    renderSlots();
-    hideLoad();
-  }catch(e){
-    hideLoad();
-    toast(e.message||'Error inesperado','error');
-  }
-}
-
-// ════════════════════════════════
-//  LOGIN
-// ════════════════════════════════
-async function doLogin(){
-  const email    = gel('login-email').value.trim();
-  const password = gel('login-password').value;
-  if(!email||!password){ toast('Ingresa correo y contraseña','error'); return; }
-  showLoad('AUTENTICANDO...');
-  const {error} = await sb.auth.signInWithPassword({email,password});
-  if(error){ hideLoad(); toast(error.message,'error'); }
-}
-
-// ════════════════════════════════
-//  SESSION - single entry point
-// ════════════════════════════════
-async function loadDashboard(user){
-  if(loaded) return;
-  loaded = true;
-  me = user;
-  showLoad('CARGANDO PERFIL...');
-  try{
-    const {data} = await sb.from('users').select('*').eq('id',user.id).maybeSingle();
-    if(!data){ loaded=false; hideLoad(); await sb.auth.signOut(); toast('Perfil no encontrado','info'); return; }
-    profile = data;
+    currentProfile = res.data;
     gel('main-nav').style.display = 'flex';
-    gel('nav-username').textContent = data.nombre+' '+data.apellido;
-    const b = gel('nav-role-badge');
-    b.textContent = data.role==='admin'?'ADMIN':'USUARIO';
-    b.className   = data.role==='admin'?'nav-badge admin':'nav-badge';
-    hideLoad();
-    if(data.role==='admin'){ showPage('admin'); loadAdmin(); }
-    else { showPage('dashboard'); loadUserDash(); }
-  }catch(e){ loaded=false; hideLoad(); toast('Error de conexión','error'); }
+    gel('nav-username').textContent = currentProfile.nombre + ' ' + currentProfile.apellido;
+    var badge = gel('nav-role-badge');
+    badge.textContent = currentProfile.role === 'admin' ? 'ADMIN' : 'USUARIO';
+    badge.className   = currentProfile.role === 'admin' ? 'nav-badge admin' : 'nav-badge';
+    hideLoading();
+    if (currentProfile.role === 'admin') { showPage('admin'); loadAdminData(); }
+    else { showPage('dashboard'); loadUserDashboard(); }
+  }).catch(function() { _done = false; hideLoading(); toast('Error de conexion', 'error'); });
 }
 
-// Safety net: if still loading after 6s → go to login
-const safetyTimer = setTimeout(()=>{
-  if(gel('loading-overlay').classList.contains('show')){ hideLoad(); showPage('auth'); }
-},6000);
+var safetyTimer = setTimeout(function() {
+  if (gel('loading-overlay').classList.contains('show')) { hideLoading(); showPage('auth'); }
+}, 6000);
 
-// Check existing session on page load
-sb.auth.getSession().then(({data:{session}})=>{
+sb.auth.getSession().then(function(res) {
   clearTimeout(safetyTimer);
-  if(session?.user) loadDashboard(session.user);
-  else hideLoad();
+  if (res.data && res.data.session && res.data.session.user) loadDashboard(res.data.session.user);
+  else hideLoading();
 });
 
-// Handle live events only
-sb.auth.onAuthStateChange((event, session)=>{
-  if(event==='SIGNED_OUT'){
-    loaded=false; me=null; profile=null;
-    gel('main-nav').style.display='none';
-    hideLoad(); showPage('auth');
+sb.auth.onAuthStateChange(function(event, session) {
+  if (event === 'SIGNED_OUT') {
+    _done = false; currentUser = null; currentProfile = null;
+    gel('main-nav').style.display = 'none'; hideLoading(); showPage('auth');
   }
-  if(event==='SIGNED_IN' && session?.user && !loaded){
-    clearTimeout(safetyTimer);
-    loadDashboard(session.user);
+  if (event === 'SIGNED_IN' && session && session.user && !_done) {
+    clearTimeout(safetyTimer); loadDashboard(session.user);
   }
 });
 
-// ════════════════════════════════
-//  USER DASHBOARD
-// ════════════════════════════════
-async function loadUserDash(){
-  gel('dash-welcome').textContent = 'Hola, '+profile.nombre+' 👋';
-  const tb = gel('user-tbody');
+function loadUserDashboard() {
+  gel('dash-welcome').textContent = 'Hola, ' + currentProfile.nombre + '!';
+  var tb = gel('user-meetings-tbody');
   tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
-  const {data:mtgs} = await sb.from('meetings').select('*').order('fecha',{ascending:true});
-  if(!mtgs||!mtgs.length){
-    tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>';
-    return;
-  }
-  tb.innerHTML='';
-  for(const m of mtgs){
-    const {data:att} = await sb.from('attendance').select('present').eq('meeting_id',m.id).eq('user_id',me.id).maybeSingle();
-    const p = att?.present;
-    const sh = p===true
-      ? '<span class="status sp"><span class="sdot"></span>Presente</span>'
-      : p===false
-      ? '<span class="status sa"><span class="sdot"></span>Ausente</span>'
-      : '<span class="status sn"><span class="sdot"></span>Sin registro</span>';
-    const tr = document.createElement('tr');
-    tr.innerHTML='<td>'+fdate(m.fecha)+'</td><td>'+ftime(m.hora)+'</td><td>'+ftime(m.hora_fin)+'</td><td>'+m.motivo+'</td><td>'+sh+'</td>';
-    tb.appendChild(tr);
-  }
-}
-
-// ════════════════════════════════
-//  ADMIN
-// ════════════════════════════════
-async function loadAdmin(){ await Promise.all([loadMeetings(), loadUsers()]); renderStats(); }
-
-async function loadMeetings(){
-  const tb = gel('admin-meetings-tbody');
-  tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
-  const {data} = await sb.from('meetings').select('*').order('fecha',{ascending:true});
-  meetings = data||[];
-  const sel = gel('att-select');
-  sel.innerHTML='<option value="">— Selecciona una reunión —</option>';
-  meetings.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=fdate(m.fecha)+' '+ftime(m.hora)+' · '+m.motivo; sel.appendChild(o); });
-  if(!meetings.length){ tb.innerHTML='<tr><td colspan="5"><div class="empty"><div class="ei">📅</div><p>No hay reuniones</p></div></td></tr>'; return; }
-  tb.innerHTML='';
-  meetings.forEach(m=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML='<td>'+fdate(m.fecha)+'</td><td>'+ftime(m.hora)+'</td><td>'+ftime(m.hora_fin)+'</td><td>'+m.motivo+'</td>'
-      +'<td><div class="flex gap-2"><button class="btn btn-ghost btn-sm" onclick="editMeeting(\''+m.id+'\')">✏️ Editar</button>'
-      +'<button class="btn btn-danger btn-sm" onclick="deleteMeeting(\''+m.id+'\')">🗑 Borrar</button></div></td>';
-    tb.appendChild(tr);
+  sb.from('meetings').select('*').order('fecha', { ascending: true }).then(function(res) {
+    var mtgs = res.data || [];
+    if (!mtgs.length) { tb.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#128197;</div><p>No hay reuniones</p></div></td></tr>'; return; }
+    tb.innerHTML = '';
+    mtgs.forEach(function(m) {
+      sb.from('attendance').select('present').eq('meeting_id', m.id).eq('user_id', currentUser.id).maybeSingle().then(function(ar) {
+        var p = ar.data ? ar.data.present : undefined;
+        var sh = p === true ? '<span class="status status-present"><span class="status-dot"></span>Presente</span>'
+               : p === false ? '<span class="status status-absent"><span class="status-dot"></span>Ausente</span>'
+               : '<span class="status status-none"><span class="status-dot"></span>Sin registro</span>';
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + formatDate(m.fecha) + '</td><td>' + formatTime(m.hora) + '</td><td>' + formatTime(m.hora_fin) + '</td><td>' + m.motivo + '</td><td>' + sh + '</td>';
+        tb.appendChild(tr);
+      });
+    });
   });
 }
 
-async function loadUsers(){
-  const el = gel('admin-users-list');
-  el.innerHTML='<div style="padding:20px;text-align:center"><div class="loader" style="margin:auto"></div></div>';
-  const {data} = await sb.from('users').select('*').order('nombre');
-  users = data||[];
-  if(!users.length){ el.innerHTML='<div class="empty"><div class="ei">👥</div><p>No hay usuarios</p></div>'; return; }
-  el.innerHTML='';
-  users.forEach(u=>{
-    const r=document.createElement('div'); r.className='user-row';
-    const av = u.photo_urls&&u.photo_urls[0]?'<img src="'+u.photo_urls[0]+'" alt=""/>':'<span>👤</span>';
-    r.innerHTML='<div class="uav">'+av+'</div><div class="uinfo"><div class="name">'+u.nombre+' '+u.apellido+'</div><div class="email">'+u.email+'</div></div>'
-      +'<span class="chip '+(u.role==='admin'?'admin':'')+'">'+( u.role==='admin'?'ADMIN':'USUARIO')+'</span>';
-    el.appendChild(r);
+function loadAdminData() { loadAdminMeetings(); loadAdminUsers(); }
+
+function loadAdminMeetings() {
+  var tb = gel('admin-meetings-tbody');
+  tb.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px"><div class="loader" style="margin:auto"></div></td></tr>';
+  sb.from('meetings').select('*').order('fecha', { ascending: true }).then(function(res) {
+    allMeetings = res.data || [];
+    var sel = gel('att-meeting-select');
+    sel.innerHTML = '<option value="">Selecciona una reunion</option>';
+    allMeetings.forEach(function(m) {
+      var o = document.createElement('option'); o.value = m.id;
+      o.textContent = formatDate(m.fecha) + ' ' + formatTime(m.hora) + ' - ' + m.motivo;
+      sel.appendChild(o);
+    });
+    updateAdminStats();
+    if (!allMeetings.length) { tb.innerHTML = '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">&#128197;</div><p>No hay reuniones</p></div></td></tr>'; return; }
+    tb.innerHTML = '';
+    allMeetings.forEach(function(m) {
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + formatDate(m.fecha) + '</td><td>' + formatTime(m.hora) + '</td><td>' + formatTime(m.hora_fin) + '</td><td>' + m.motivo + '</td>'
+        + '<td><div class="flex gap-2">'
+        + '<button class="btn btn-ghost btn-sm" onclick="editMeeting(\'' + m.id + '\')">Editar</button>'
+        + '<button class="btn btn-danger btn-sm" onclick="deleteMeeting(\'' + m.id + '\')">Borrar</button>'
+        + '</div></td>';
+      tb.appendChild(tr);
+    });
   });
 }
 
-function renderStats(){
-  gel('admin-stats').innerHTML=
-    '<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:\'Share Tech Mono\',monospace">'+meetings.length+'</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Reuniones</div></div>'
-   +'<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent2);font-family:\'Share Tech Mono\',monospace">'+users.length+'</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Usuarios</div></div>';
+function loadAdminUsers() {
+  var el = gel('admin-users-list');
+  el.innerHTML = '<div style="padding:20px;text-align:center"><div class="loader" style="margin:auto"></div></div>';
+  sb.from('users').select('*').order('nombre').then(function(res) {
+    allUsers = res.data || [];
+    updateAdminStats();
+    if (!allUsers.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128101;</div><p>No hay usuarios</p></div>'; return; }
+    el.innerHTML = '';
+    allUsers.forEach(function(u) {
+      var row = document.createElement('div'); row.className = 'user-row';
+      var av = u.photo_urls && u.photo_urls[0] ? '<img src="' + u.photo_urls[0] + '" alt=""/>' : '<span>&#128100;</span>';
+      row.innerHTML = '<div class="user-avatar">' + av + '</div>'
+        + '<div class="user-info"><div class="name">' + u.nombre + ' ' + u.apellido + '</div><div class="email">' + u.email + '</div></div>'
+        + '<span class="chip ' + (u.role === 'admin' ? 'admin' : '') + '">' + (u.role === 'admin' ? 'ADMIN' : 'USUARIO') + '</span>';
+      el.appendChild(row);
+    });
+  });
 }
 
-// ════════════════════════════════
-//  MEETINGS CRUD
-// ════════════════════════════════
-function openMeetingModal(){
-  gel('meeting-modal-title').textContent='Nueva Reunión';
-  gel('meeting-edit-id').value='';
-  gel('meeting-fecha').value=''; gel('meeting-hora').value='';
-  gel('meeting-hora-fin').value=''; gel('meeting-motivo').value='';
+function updateAdminStats() {
+  gel('admin-stats').innerHTML =
+    '<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent);font-family:Share Tech Mono,monospace">' + allMeetings.length + '</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Reuniones</div></div>'
+  + '<div class="card" style="padding:20px;text-align:center"><div style="font-size:2rem;font-weight:800;color:var(--accent2);font-family:Share Tech Mono,monospace">' + allUsers.length + '</div><div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Usuarios</div></div>';
+}
+
+function openMeetingModal() {
+  gel('modal-meeting-title').textContent = 'Nueva Reunion';
+  gel('meeting-edit-id').value = '';
+  gel('meeting-fecha').value = ''; gel('meeting-hora').value = '';
+  gel('meeting-hora-fin').value = ''; gel('meeting-motivo').value = '';
   gel('modal-meeting').classList.add('open');
 }
-function closeMeetingModal(){ gel('modal-meeting').classList.remove('open'); }
+function closeMeetingModal() { gel('modal-meeting').classList.remove('open'); }
 
-function editMeeting(id){
-  const m=meetings.find(x=>x.id===id); if(!m) return;
-  gel('meeting-modal-title').textContent='Editar Reunión';
-  gel('meeting-edit-id').value=id;
-  gel('meeting-fecha').value=m.fecha||'';
-  gel('meeting-hora').value=ftime(m.hora);
-  gel('meeting-hora-fin').value=ftime(m.hora_fin);
-  gel('meeting-motivo').value=m.motivo||'';
+function editMeeting(id) {
+  var m = null;
+  for (var i = 0; i < allMeetings.length; i++) { if (allMeetings[i].id === id) { m = allMeetings[i]; break; } }
+  if (!m) return;
+  gel('modal-meeting-title').textContent = 'Editar Reunion';
+  gel('meeting-edit-id').value = id;
+  gel('meeting-fecha').value = m.fecha || '';
+  gel('meeting-hora').value = formatTime(m.hora);
+  gel('meeting-hora-fin').value = formatTime(m.hora_fin);
+  gel('meeting-motivo').value = m.motivo || '';
   gel('modal-meeting').classList.add('open');
 }
 
-async function saveMeeting(){
-  const fecha=gel('meeting-fecha').value;
-  const hora=gel('meeting-hora').value;
-  const hora_fin=gel('meeting-hora-fin').value;
-  const motivo=gel('meeting-motivo').value.trim();
-  if(!fecha||!hora||!hora_fin||!motivo){ toast('Completa todos los campos','error'); return; }
-  if(hora>=hora_fin){ toast('La hora de fin debe ser mayor a la de inicio','error'); return; }
-  const editId=gel('meeting-edit-id').value;
-  const btn=gel('btn-save-meeting'); btn.disabled=true; btn.innerHTML='<div class="loader"></div>';
-
-  // Check conflicts
-  let q=sb.from('meetings').select('id,hora,hora_fin,motivo').eq('fecha',fecha).lt('hora',hora_fin).gt('hora_fin',hora);
-  if(editId) q=q.neq('id',editId);
-  const {data:conf}=await q;
-  if(conf&&conf.length){ btn.disabled=false; btn.innerHTML='Guardar'; toast('⚠️ Horario ocupado: "'+conf[0].motivo+'" de '+ftime(conf[0].hora)+' a '+ftime(conf[0].hora_fin),'error'); return; }
-
-  let error;
-  if(editId){ ({error}=await sb.from('meetings').update({fecha,hora,hora_fin,motivo}).eq('id',editId)); }
-  else { ({error}=await sb.from('meetings').insert({fecha,hora,hora_fin,motivo})); }
-  btn.disabled=false; btn.innerHTML='Guardar';
-  if(error){ toast('Error: '+error.message,'error'); return; }
-  toast(editId?'Reunión actualizada ✓':'Reunión creada ✓','success');
-  closeMeetingModal(); await loadMeetings(); renderStats();
-}
-
-async function deleteMeeting(id){
-  if(!confirm('¿Eliminar esta reunión?')) return;
-  showLoad('ELIMINANDO...');
-  await sb.from('meetings').delete().eq('id',id);
-  hideLoad(); toast('Reunión eliminada','info');
-  gel('att-panel').style.display='none';
-  await loadMeetings(); renderStats();
-}
-
-// ════════════════════════════════
-//  ATTENDANCE
-// ════════════════════════════════
-async function loadAttendance(){
-  const mid=gel('att-select').value;
-  const panel=gel('att-panel');
-  if(!mid){ panel.style.display='none'; return; }
-  panel.style.display='block';
-  const tb=gel('att-tbody');
-  tb.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px"><div class="loader" style="margin:auto"></div></td></tr>';
-  const {data:attData}=await sb.from('attendance').select('*').eq('meeting_id',mid);
-  const map={}; (attData||[]).forEach(a=>map[a.user_id]=a.present);
-  const non=users.filter(u=>u.role!=='admin');
-  if(!non.length){ tb.innerHTML='<tr><td colspan="4"><div class="empty"><p>No hay usuarios</p></div></td></tr>'; return; }
-  tb.innerHTML='';
-  non.forEach(u=>{
-    const p=map[u.id];
-    const sh=p===true?'<span class="status sp"><span class="sdot"></span>Presente</span>'
-      :p===false?'<span class="status sa"><span class="sdot"></span>Ausente</span>'
-      :'<span class="status sn"><span class="sdot"></span>Sin registro</span>';
-    const tr=document.createElement('tr');
-    tr.innerHTML='<td><strong>'+u.nombre+' '+u.apellido+'</strong></td>'
-      +'<td style="color:var(--muted);font-size:.8rem">'+u.email+'</td>'
-      +'<td id="as-'+u.id+'">'+sh+'</td>'
-      +'<td><div class="att-toggle">'
-      +'<button class="att-btn abp '+(p===true?'active':'')+'" id="bp-'+u.id+'" onclick="setAtt(\''+mid+'\',\''+u.id+'\',true)">✓ Presente</button>'
-      +'<button class="att-btn aba '+(p===false?'active':'')+'" id="ba-'+u.id+'" onclick="setAtt(\''+mid+'\',\''+u.id+'\',false)">✗ Ausente</button>'
-      +'</div></td>';
-    tb.appendChild(tr);
+function saveMeeting() {
+  var fecha   = gel('meeting-fecha').value;
+  var hora    = gel('meeting-hora').value;
+  var horafin = gel('meeting-hora-fin').value;
+  var motivo  = gel('meeting-motivo').value.trim();
+  if (!fecha || !hora || !horafin || !motivo) { toast('Completa todos los campos', 'error'); return; }
+  if (hora >= horafin) { toast('Hora fin debe ser mayor a hora inicio', 'error'); return; }
+  var editId = gel('meeting-edit-id').value;
+  var btn = gel('btn-save-meeting'); btn.disabled = true; btn.innerHTML = '<div class="loader"></div>';
+  var q = sb.from('meetings').select('id,hora,hora_fin,motivo').eq('fecha', fecha).lt('hora', horafin).gt('hora_fin', hora);
+  if (editId) q = q.neq('id', editId);
+  q.then(function(cr) {
+    if (cr.data && cr.data.length) {
+      btn.disabled = false; btn.innerHTML = 'Guardar';
+      toast('Horario ocupado: ' + cr.data[0].motivo + ' de ' + formatTime(cr.data[0].hora) + ' a ' + formatTime(cr.data[0].hora_fin), 'error');
+      return;
+    }
+    var p = editId
+      ? sb.from('meetings').update({ fecha: fecha, hora: hora, hora_fin: horafin, motivo: motivo }).eq('id', editId)
+      : sb.from('meetings').insert({ fecha: fecha, hora: hora, hora_fin: horafin, motivo: motivo });
+    p.then(function(pr) {
+      btn.disabled = false; btn.innerHTML = 'Guardar';
+      if (pr.error) { toast(pr.error.message, 'error'); return; }
+      toast(editId ? 'Reunion actualizada' : 'Reunion creada', 'success');
+      closeMeetingModal(); loadAdminMeetings();
+    });
   });
 }
 
-async function setAtt(mid,uid,present){
-  const {error}=await sb.from('attendance').upsert({meeting_id:mid,user_id:uid,present,updated_at:new Date().toISOString()},{onConflict:'meeting_id,user_id'});
-  if(error){ toast('Error al guardar','error'); return; }
-  gel('as-'+uid).innerHTML=present
-    ?'<span class="status sp"><span class="sdot"></span>Presente</span>'
-    :'<span class="status sa"><span class="sdot"></span>Ausente</span>';
-  gel('bp-'+uid).classList.toggle('active',present===true);
-  gel('ba-'+uid).classList.toggle('active',present===false);
-  toast(present?'Marcado Presente ✓':'Marcado Ausente','success');
+function deleteMeeting(id) {
+  if (!confirm('Eliminar esta reunion?')) return;
+  showLoading('ELIMINANDO...');
+  sb.from('meetings').delete().eq('id', id).then(function() {
+    hideLoading(); toast('Reunion eliminada', 'info');
+    gel('attendance-panel').style.display = 'none';
+    loadAdminMeetings();
+  });
 }
 
-// Close modals on overlay click
-gel('modal-meeting').addEventListener('click',e=>{ if(e.target===gel('modal-meeting')) closeMeetingModal(); });
-gel('modal-camera').addEventListener('click',e=>{ if(e.target===gel('modal-camera')) closeCam(); });
-gel('modal-confirm').addEventListener('click',e=>{ if(e.target===gel('modal-confirm')) confirmPhoto(false); });
+function loadAttendance() {
+  var mid = gel('att-meeting-select').value;
+  var panel = gel('attendance-panel');
+  if (!mid) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  var tb = gel('attendance-tbody');
+  tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px"><div class="loader" style="margin:auto"></div></td></tr>';
+  sb.from('attendance').select('*').eq('meeting_id', mid).then(function(ar) {
+    var map = {};
+    (ar.data || []).forEach(function(a) { map[a.user_id] = a.present; });
+    var non = allUsers.filter(function(u) { return u.role !== 'admin'; });
+    if (!non.length) { tb.innerHTML = '<tr><td colspan="4"><div class="empty-state"><p>No hay usuarios</p></div></td></tr>'; return; }
+    tb.innerHTML = '';
+    non.forEach(function(u) {
+      var p = map[u.id];
+      var sh = p === true ? '<span class="status status-present"><span class="status-dot"></span>Presente</span>'
+             : p === false ? '<span class="status status-absent"><span class="status-dot"></span>Ausente</span>'
+             : '<span class="status status-none"><span class="status-dot"></span>Sin registro</span>';
+      var tr = document.createElement('tr');
+      tr.innerHTML = '<td><strong>' + u.nombre + ' ' + u.apellido + '</strong></td>'
+        + '<td style="color:var(--muted);font-size:.8rem">' + u.email + '</td>'
+        + '<td id="as-' + u.id + '">' + sh + '</td>'
+        + '<td><div class="att-toggle">'
+        + '<button class="att-btn att-btn-present' + (p === true ? ' active' : '') + '" id="bp-' + u.id + '" onclick="setAttendance(\'' + mid + '\',\'' + u.id + '\',true)">Presente</button>'
+        + '<button class="att-btn att-btn-absent' + (p === false ? ' active' : '') + '" id="ba-' + u.id + '" onclick="setAttendance(\'' + mid + '\',\'' + u.id + '\',false)">Ausente</button>'
+        + '</div></td>';
+      tb.appendChild(tr);
+    });
+  });
+}
+
+function setAttendance(mid, uid, present) {
+  sb.from('attendance').upsert({ meeting_id: mid, user_id: uid, present: present, updated_at: new Date().toISOString() }, { onConflict: 'meeting_id,user_id' }).then(function(r) {
+    if (r.error) { toast('Error al guardar', 'error'); return; }
+    gel('as-' + uid).innerHTML = present
+      ? '<span class="status status-present"><span class="status-dot"></span>Presente</span>'
+      : '<span class="status status-absent"><span class="status-dot"></span>Ausente</span>';
+    gel('bp-' + uid).classList.toggle('active', present === true);
+    gel('ba-' + uid).classList.toggle('active', present === false);
+    toast(present ? 'Marcado Presente' : 'Marcado Ausente', 'success');
+  });
+}
+
+gel('modal-meeting').addEventListener('click', function(e) { if (e.target === gel('modal-meeting')) closeMeetingModal(); });
+gel('modal-camera').addEventListener('click', function(e) { if (e.target === gel('modal-camera')) closeCameraModal(); });
+gel('modal-confirm').addEventListener('click', function(e) { if (e.target === gel('modal-confirm')) confirmPhoto(false); });
 </script>
 </body>
-</html>
-HTMLEOF
-echo "Done: $?"
+</html>"""
+
